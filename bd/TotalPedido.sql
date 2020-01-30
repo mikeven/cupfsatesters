@@ -1,0 +1,1 @@
+SELECT SUM(Cantidad2) AS TotAcum FROM Pedido as p, Colaborador as c where p.Confirmado = 1 and p.idColaborador = c.idColaborador and c.Departamento is NULL

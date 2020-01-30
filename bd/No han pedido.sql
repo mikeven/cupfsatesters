@@ -1,0 +1,1 @@
+SELECT * FROM Colaborador where idColaborador not in (select idColaborador from Pedido where Confirmado=1);

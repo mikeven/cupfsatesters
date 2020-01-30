@@ -1,0 +1,1 @@
+UPDATE Colaborador SET Password = MD5(CONCAT(Email, idColaborador))  where idColaborador <> 0

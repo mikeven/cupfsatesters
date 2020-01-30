@@ -1,0 +1,1 @@
+SELECT * FROM FreeGoods.Pedido as p, Colaborador as c where p.idColaborador = c.idColaborador and Confirmado = 0;
