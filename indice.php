@@ -177,8 +177,8 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 				?>
 					<tr <?php echo $marcada ?>>
 						<td> 
-							<?php if( $item['Referencia1'] != "" ) { ?>
-								<img src="fotos/<?php echo $item['Referencia1']?>.JPEG" width="30px"> 
+							<?php if( existeArchivoImagen( $item['Referencia1'] ) ) { ?>
+								<img src="fotos/<?php echo $item['Referencia1']?>.JPEG" width="60px"> 
 							<?php } ?>
 						</td>
 						<td><?php echo $item['Descripcion1'] ?></td>

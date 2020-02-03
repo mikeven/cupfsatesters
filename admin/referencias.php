@@ -46,7 +46,7 @@ $(document).ready(function() {
 
 <br>
 <center>
-<div style="font-size:24px; margin-top:70px"><?php echo $titulo ?></div>
+<div style="font-size:24px; margin-top:70px">Referencias</div>
 <br>
 
 <div id="Listado">
