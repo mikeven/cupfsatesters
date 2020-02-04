@@ -20,12 +20,19 @@
 	/* ----------------------------------------------------------- */
 	function obtenerItemsFamilia( $dbh, $familia ){
 		// Devuelve los ítems de una familia
-		$sql = "SELECT * FROM Item  where Familia = $familia and Activo = 1"; 
+		$sql = "SELECT * FROM Item  where Familia = $familia"; 
 
 		$Rs = mysqli_query ( $dbh, $sql );
 		$rows = mysqli_num_rows( $Rs );
 
 		return $Rs;
+	}
+	/* ----------------------------------------------------------- */
+	function sop( $val_list, $val_reg ){
+		//Retorna el parámetro 'selected' para opciones de listas desplegables: marcar como seleccionada
+		$sel = "";
+		if( $val_list == $val_reg ) $sel = "selected";
+		return $sel;
 	}
 	/* ----------------------------------------------------------- */
 	function obtenerItemsPedidoFamilia( $familia ){

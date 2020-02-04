@@ -49,7 +49,7 @@ include( 'fn/fn-referencias.php' );
 			<tr>
 				<th colspan=4>Descripción</th>
 				<th>Referencia</th>
-				<th>Activación</th>
+				<th>Activo</th>
 			</tr>
 			<?php 
 				while( $item = mysqli_fetch_assoc( $items_familia ) ){ 
@@ -66,7 +66,12 @@ include( 'fn/fn-referencias.php' );
 						<td><?php echo $item['Descripcion2']?></td>
 						<td><?php echo $item['Descripcion3'] ?></td>
 						<td><?php echo $item['Referencia1'] ?></td>
-						<td><select><option value=1>Si</option><option value=0>No</></select></td>
+						<td>
+							<select class="sel_act_item" data-id="<?php echo $id ?>" data-act="<?php echo $item['Activo'] ?>">
+								<option value=1 <?php echo sop( 1, $item['Activo'] )?>>Sí</option>
+								<option value=0 <?php echo sop( 0, $item['Activo'] )?>>No</option>
+							</select>
+						</td>
 					</tr>
 			<?php } ?>	
 		</table>
