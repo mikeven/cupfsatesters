@@ -189,7 +189,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 								<?php echo $item['Referencia1'] ?>
 								<select class='<?php echo $id." ".$des2pegada?> selectSC' name='s1-<?php echo $id?>'>
 									<?php 
-										for ( $x = 0; $x <= $unidades - 1; $x++ ) { 
+										for ( $x = 0; $x <= $unidades; $x++ ) { 
 											$sel = ""; if( $cantidad1 == $x ) $sel = "selected";
 									?>
 										<option value="<?php echo $x ?>" <?php echo $sel ?>>

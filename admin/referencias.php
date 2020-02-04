@@ -1,11 +1,7 @@
 <?php
 ini_set( 'display_errors', 1 );	
 require ('../bd.php');
-
-session_start();
-//Reviso si la sesion caducó
-if(!isset($_SESSION['acceso'])) 
-	header('Location: login.php?s=0');
+include( 'fn/fn-referencias.php' );
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -22,22 +18,11 @@ if(!isset($_SESSION['acceso']))
 <link rel="stylesheet" type="text/css" href="../css1.css" />
 
 <script>
-
-function toggle (c) {
-	$("#" + c).toggle(1000, "swing");
-}
-
-$(document).ready(function() {
-
-	
-});
+	function toggle (c) {
+		$("#" + c).toggle(1000, "swing");
+	}
 </script>
-
-<style>
-
-
-</style>
-
+<script type="text/javascript" src="js/fn-referencias.js"></script>
 </head>
 
 <body>
@@ -46,52 +31,49 @@ $(document).ready(function() {
 
 <br>
 <center>
-<div style="font-size:24px; margin-top:70px">Referencias</div>
+<div style="font-size:24px; margin-top:70px">REFERENCIAS</div>
 <br>
 
 <div id="Listado">
 
-<!--Empieza Makeup -->
-<div id="titMakeup" class="product-details__title" onclick="toggle('Maquillaje')">Maquillaje &#8693;</div>
-<div id="Maquillaje" class="listadoPedido" style="display:none;">
-
-	<table id="productos" align="center">
-		<tr>
-			<th colspan=3>Descripción</th>
-			<th>Referencia</th>
-			<th>Activo</th>
-		</tr>
-<?php
-$sql="SELECT * FROM Item  where Familia = 1"; 
-//echo $sql;
-
-$Rs = mysqli_query ($dbh, $sql);
-$rows = mysqli_num_rows($Rs);
-
-while($row=mysqli_fetch_assoc($Rs)){ 
-	$id = $row['idItem'];
-	$des1 = $row['Descripcion1'];
-	$des2 = $row['Descripcion2'];
-	$des3 = $row['Descripcion3'];
-	$ref1 = $row['Referencia1'];
+<?php 
+	while( $f = mysqli_fetch_assoc( $familias ) ){ 
+		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"] );
+?>
 	
-	echo "<tr>"; 
-	echo "<td>" . $des1 . "</td>";
-	echo "<td>" . $des2 . "</td>";
-	echo "<td>" . $des3 . "</td>";
-	echo "<td>" . $ref1 . "</td>";	
-	echo "<td><select><option value=1>Si</optio><option value=0>No</></select></td>";
-	echo "</tr>";
-
-}
-	?>	
-		
-	</table>
-	
-</div>
-
-<div class="product-details__title" style="margin-top:10px"></div>
-<!--Hasta aqui Makeup -->
+	<div id="tit<?php echo $f["Nombre"]?>" class="product-details__title" onclick="toggle('<?php echo $f["Nombre"]?>')">
+		<?php echo $f["Nombre"]?> &#8693;
+	</div>
+	<div id="<?php echo $f["Nombre"]?>" class="listadoPedido" style="display:none;">
+		<table id="productos" align="center">
+			<tr>
+				<th colspan=4>Descripción</th>
+				<th>Referencia</th>
+				<th>Activación</th>
+			</tr>
+			<?php 
+				while( $item = mysqli_fetch_assoc( $items_familia ) ){ 
+					$row 	= $item;
+					$id 	= $row['idItem'];
+				?>
+					<tr>
+						<td> 
+							<?php if( existeArchivoImagen( $item['Referencia1'] ) ) { ?>
+								<img src="../fotos/<?php echo $item['Referencia1']?>.JPEG" width="60px"> 
+							<?php } ?>
+						</td>
+						<td><?php echo $item['Descripcion1'] ?></td>
+						<td><?php echo $item['Descripcion2']?></td>
+						<td><?php echo $item['Descripcion3'] ?></td>
+						<td><?php echo $item['Referencia1'] ?></td>
+						<td><select><option value=1>Si</option><option value=0>No</></select></td>
+					</tr>
+			<?php } ?>	
+		</table>
+	</div>
+	<div class="product-details__title" style="margin-top:10px"></div>
+	<!--Fin bloque familia -->
+<?php } ?>
 
 </div> <!--Cierro el listado-->
 

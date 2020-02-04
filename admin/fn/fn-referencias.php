@@ -37,7 +37,7 @@
 	}
 	/* ----------------------------------------------------------- */
 	function existeArchivoImagen( $ref ){
-		$archivo = "fotos/$ref".".JPEG";
+		$archivo = "../fotos/$ref".".JPEG";
 		return file_exists( $archivo );
 	}
 	/* ----------------------------------------------------------- */
