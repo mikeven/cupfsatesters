@@ -40,19 +40,19 @@ include( 'fn/fn-usuarios.php' );
 		<tr>
 			<th align="left">Nombre</th>
 			<th align="left">Usuario</th>
-			<th align="left">NroCliente</th>
+			<th align="left">N° Cliente</th>
 			<th align="left">Email</th>
 		</tr>
 		<?php while( $u = mysqli_fetch_assoc( $usuarios ) ){ ?>
 			<tr>
-				<td>
+				<td align="left">
 					<a href="usuario.php?id=<?php echo $u["idColaborador"] ?>">
 						<?php echo $u["Nombre"] ?>
 					</a>
 				</td>
-				<td><?php echo $u['Usuario'] ?></td>
-				<td><?php echo $u['NroCliente'] ?></td>
-				<td><?php echo $u['Email'] ?></td>
+				<td align="left"><?php echo $u['Usuario'] ?></td>
+				<td align="left"><?php echo $u['NroCliente'] ?></td>
+				<td align="left"><?php echo $u['Email'] ?></td>
 			</tr>
 		<?php } ?>	
 	</table>	
