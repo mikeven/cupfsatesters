@@ -42,7 +42,7 @@
 <div class="container">
 	<center>
 		<div style="font-size:24px; margin-top:70px"> <?php echo $usuario["Usuario"]; ?> </div>
-	<br>
+		<br>
 
 		<div class="row">
 			<div class="col-sm-6 col-xs-12" align="left">
@@ -56,7 +56,11 @@
 				
 				<?php while( $p = mysqli_fetch_assoc( $pedidos ) ){ ?>
 					
-					<p><a href="#!">#<?php echo $p["idPedido"]." - ".$p["Fecha"]; ?></a></p>
+					<p>
+						<a href="pedido_usuario.php?pedido=<?php echo $p["idPedido"]; ?>">
+							#<?php echo $p["idPedido"]." - ".$p["Fecha"]; ?>
+						</a>
+					</p>
 				
 				<?php } ?>
 			</div>

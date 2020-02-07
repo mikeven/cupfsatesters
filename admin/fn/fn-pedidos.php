@@ -42,6 +42,16 @@
 		return $Rs;
 	}
 	/* ----------------------------------------------------------- */
+	function obtenerPedidoPorId( $dbh, $id ){
+		// Devuelve el registro de pedido dado su id
+
+		$sql = "SELECT p.idPedido, c.idColaborador, date_format( p.Fecha, '%d/%m/%Y') as Fecha, 
+		c.Nombre, c.Usuario, c.Email, p.Confirmado FROM Pedido p, Colaborador c 
+		where c.idColaborador = p.idColaborador and p.idPedido = $id";
+
+		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
+	}
+	/* ----------------------------------------------------------- */
 	function obtenerItemsPedidoFamilia( $familia ){
 		// Devuelve los ítems de una familia
 		$sql = "SELECT * FROM Item  where Familia = $familia and Activo = 1"; 
@@ -75,25 +85,27 @@
 		$cont = 0;
 		$sql = "SELECT * FROM Pedido as p, Colaborador as c where c.idColaborador = p.idColaborador and p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')";
 		//echo $sql;
-		$Rs = mysqli_query ($dbh, $sql);
-		$rows = mysqli_num_rows($Rs);
-		while($row=mysqli_fetch_assoc($Rs)){
+		$Rs = mysqli_query ( $dbh, $sql );
+		$rows = mysqli_num_rows( $Rs );
+
+		while( $row = mysqli_fetch_assoc( $Rs ) ){
+
 			$idcliente = $row['idColaborador'];
 			$nombre = $row['Nombre']; 
 			$pedido = $row['idPedido'];
 			
-		//Saco la cantidad de unidades de su pedido
+			//Saco la cantidad de unidades de su pedido
 			$sum = 0; //unidades pedidas en su pedido
 			$sql = "SELECT SUM(Cantidad1) AS TotAcum FROM PedidoDetalle where idPedido=$pedido"; 
 			$Rs2 = mysqli_query ($dbh, $sql);
 			$row2 = mysqli_fetch_assoc($Rs2); 
-			if ($row2['TotAcum'] > 0)
+			if ( $row2['TotAcum'] > 0 )
 				$sum = $row2['TotAcum'];	
-		//Listo
+			
+			//Listo
 		?>
 
 		<div class="product-details__title" onclick="toggle(<?php echo $idcliente ?>)"><?php echo $nombre ?> (<?php echo $sum ?>)</div>
-
 
 		<?php
 			$sql="SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $pedido and d.idItem = i.idItem ";  
@@ -144,4 +156,11 @@
 		echo "<br><div class='boton' onclick=javascript:location.href='excel.php?i=" . $inicio . "&f=" . $fin . "'>Descargar</div><br><br>";
 	}// Cierro la función
 	/* ----------------------------------------------------------- */
+	if( isset( $_GET["pedido"] ) ){
+
+		$idpedido =  $_GET["pedido"];
+		$sql = "SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $idpedido and d.idItem = i.idItem";  
+		$items_pedido = mysqli_query ( $dbh, $sql );
+
+	}
 ?>

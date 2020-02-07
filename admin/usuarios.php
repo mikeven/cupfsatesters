@@ -16,12 +16,7 @@ include( 'fn/fn-usuarios.php' );
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
 <link rel="stylesheet" type="text/css" href="../css1.css" />
-<style type="text/css">
-	
-	#usuarios a:hover{
-		color:  #999;
-	}
-</style>
+
 
 <script>
 	function toggle (c) {
@@ -40,11 +35,12 @@ include( 'fn/fn-usuarios.php' );
 <div style="font-size:24px; margin-top:70px">USUARIOS</div>
 <br>
 
-<div id="Listado">
-	<table id="usuarios" align="center" width="60%">
+<div id="Listado" class="listadoUsuarios">
+	<table id="lista_usuarios" align="center" class="testertable">
 		<tr>
 			<th align="left">Nombre</th>
 			<th align="left">Usuario</th>
+			<th align="left">NroCliente</th>
 			<th align="left">Email</th>
 		</tr>
 		<?php while( $u = mysqli_fetch_assoc( $usuarios ) ){ ?>
@@ -54,6 +50,7 @@ include( 'fn/fn-usuarios.php' );
 						<?php echo $u["Nombre"] ?>
 					</a>
 				</td>
+				<td><?php echo $u['Usuario'] ?></td>
 				<td><?php echo $u['NroCliente'] ?></td>
 				<td><?php echo $u['Email'] ?></td>
 			</tr>
