@@ -60,6 +60,17 @@
 		$rows = mysqli_num_rows( $Rs );
 	}
 	/* ----------------------------------------------------------- */
+	function cantidadPedido( $dbh, $idp ){
+		// Devuelve la suma total de las cantidades de un pedido
+		$sql = "SELECT SUM(Cantidad1) AS TotAcum FROM PedidoDetalle where idPedido = $idp"; 
+		$Rs2 = mysqli_query ($dbh, $sql);
+		$row2 = mysqli_fetch_assoc($Rs2); 
+		if ( $row2['TotAcum'] > 0 )
+			$sum = $row2['TotAcum'];
+
+		return $sum;
+	}
+	/* ----------------------------------------------------------- */
 	//Funcion iterar en las semanas
 	function semanas( $dbh, $inicio, $fin ) {
 		

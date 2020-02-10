@@ -41,17 +41,14 @@
 <br>
 <div class="container">
 	<center>
-		<div style="font-size:24px; margin-top:70px"> <?php echo $usuario["Usuario"]; ?> </div>
+		<div style="font-size:24px; margin-top:70px"> 
+			<?php echo $usuario["Nombre"]." (".$usuario["NroCliente"].")"; ?> 
+		</div>
 		<br>
 
 		<div class="row">
-			<div class="col-sm-6 col-xs-12" align="left">
-				<p><b>Nombre:</b> <?php echo $usuario["Nombre"]; ?></p>
-				<p><b>Email:</b> <?php echo $usuario["Email"]; ?></p>
-				<p><b>Usuario:</b> <?php echo $usuario["Usuario"]; ?></p>
-				<p><b>Nro Cliente:</b> <?php echo $usuario["NroCliente"]; ?></p>
-			</div>
-			<div class="col-sm-6 col-xs-12">
+
+			<div class="col-sm-12 col-xs-12">
 				<div style="font-size:18px; margin:10px; color:#666;"> Lista de pedidos </div>
 				
 				<?php while( $p = mysqli_fetch_assoc( $pedidos ) ){ ?>
@@ -64,6 +61,10 @@
 				
 				<?php } ?>
 			</div>
+		</div>
+
+		<div class="boton" onclick="javascript:location.href='usuarios.php'" style="margin-top: 50px;">
+			<i class="fas fa-arrow-alt-circle-left" title="Volver a usuarios"></i> Volver
 		</div>
 
 	</center>

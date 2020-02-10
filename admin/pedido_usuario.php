@@ -8,6 +8,8 @@
 	include ('fn/fn-pedidos.php');
 
 	$pedido = obtenerPedidoPorId( $dbh, $idpedido );
+	$idc = $pedido["idColaborador"];
+	$total = cantidadPedido( $dbh, $idpedido );
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -32,7 +34,7 @@
 	<div id="Listado">
 		<center>
 			<div style="font-size:24px; margin-top:70px"> <?php echo $pedido["Nombre"]; ?> </div>
-			<div style="font-size:18px;"> <?php echo $pedido["Fecha"]; ?> </div>
+			<div style="font-size:18px;"> <?php echo $pedido["Fecha"]." (".$total.")"; ?> </div>
 			<br>
 			<div class="row">
 				<div class="col-sm-12 col-xs-12">
@@ -62,6 +64,9 @@
 						<?php } ?>
 					</table>
 				</div>
+			</div>
+			<div class="boton" onclick="javascript:location.href='usuario.php?id=<?php echo $idc?>'" style="margin: 50px 0;">
+				<i class="fas fa-arrow-alt-circle-left" title="Volver a usuarios"></i> Volver
 			</div>
 		</center>
 	</div>
