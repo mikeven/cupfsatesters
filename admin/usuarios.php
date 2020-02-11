@@ -38,21 +38,28 @@ include( 'fn/fn-usuarios.php' );
 <div id="Listado" class="listadoUsuarios">
 	<table id="lista_usuarios" align="center" class="testertable">
 		<tr>
-			<th align="left">Nombre</th>
-			<th align="left">Usuario</th>
-			<th align="left">N° Cliente</th>
-			<th align="left">Email</th>
+			<th align="left" width="40%">Nombre</th>
+			<th align="left" width="10%">Usuario</th>
+			<th align="left" width="15%">N° Cliente</th>
+			<th align="left" width="20%">Email</th>
+			<th align="left" colspan="2" width="15%"></th>
 		</tr>
 		<?php while( $u = mysqli_fetch_assoc( $usuarios ) ){ ?>
 			<tr>
-				<td align="left">
-					<a href="usuario.php?id=<?php echo $u["idColaborador"] ?>">
-						<?php echo $u["Nombre"] ?>
-					</a>
-				</td>
+				<td align="left"><?php echo $u["Nombre"] ?></td>
 				<td align="left"><?php echo $u['Usuario'] ?></td>
 				<td align="left"><?php echo $u['NroCliente'] ?></td>
 				<td align="left"><?php echo $u['Email'] ?></td>
+				<td align="center"> 
+					<a href="usuario.php?id=<?php echo $u["idColaborador"] ?>">
+						<i class="fas fa-file-alt fa-2x" title="Pedidos"></i>
+					</a>
+				</td>
+				<td align="center"> 
+					<a href="inventario.php?idu=<?php echo $u["idColaborador"] ?>">
+						<i class="fas fa-cubes fa-2x" title="Inventario"></i>
+					</a>
+				</td>
 			</tr>
 		<?php } ?>	
 	</table>	
