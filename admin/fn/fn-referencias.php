@@ -4,11 +4,6 @@
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
 
-	session_start();
-	// Reviso si la sesion caducó
-	if(!isset($_SESSION['acceso'])) 
-	header('Location: login.php?s=0');
-	
 	/* ----------------------------------------------------------- */
 	function obtenerFamilias( $dbh ){
 		// Devuelve los registros de familia

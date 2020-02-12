@@ -4,11 +4,6 @@
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
 
-	session_start();
-	// Reviso si la sesion caducó
-	if(!isset($_SESSION['acceso'])) 
-	header('Location: login.php?s=0');
-	
 	/* ----------------------------------------------------------- */
 	$dias = array("Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábado");
 	$meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");  

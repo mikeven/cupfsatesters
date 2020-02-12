@@ -1,8 +1,14 @@
 <?php
+	/* ----------------------------------------------------------- */
+	/* Cupfsa Testers - Listado de pedidos de usuario ------------ */
+	/* ----------------------------------------------------------- */
+	/* ----------------------------------------------------------- */
 	ini_set( 'display_errors', 1 );	
 
 	require ('../bd.php');
+	include( 'fn/fn-sesion.php' );
 	include( 'fn/fn-usuarios.php' );
+	
 	if( !isset( $_GET['id'] ) ) 
 		header('Location: login.php?s=0');
 	else{

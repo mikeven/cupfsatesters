@@ -1,6 +1,7 @@
 <?php
 ini_set( 'display_errors', 1 );	
 require ('../bd.php');
+include( 'fn/fn-sesion.php' );
 include( 'fn/fn-usuarios.php' );
 
 ?>
@@ -36,6 +37,7 @@ include( 'fn/fn-usuarios.php' );
 <br>
 
 <div id="Listado" class="listadoUsuarios">
+	<div class="product-details__title"></div>
 	<table id="lista_usuarios" align="center" class="testertable">
 		<tr>
 			<th align="left" width="40%">Nombre</th>
@@ -63,7 +65,7 @@ include( 'fn/fn-usuarios.php' );
 			</tr>
 		<?php } ?>	
 	</table>	
-
+	<div class="product-details__title"></div>
 </div> <!--Cierro el listado-->
 
 </center>

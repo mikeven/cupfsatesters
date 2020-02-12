@@ -4,17 +4,13 @@
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
 	ini_set( 'display_errors', 1 );	
-	require ('../bd.php');
+	require ('bd.php');
 	include( 'fn/fn-sesion.php' );
 	include( 'fn/fn-usuarios.php' );
 	include( 'fn/fn-inventario.php' );
 	$familias = obtenerFamilias( $dbh );
 
-	if( !isset( $_GET['idu'] ) ) 
-		header('Location: login.php?s=0');
-	else{
-		$usuario = obtenerColaboradorPorId( $dbh, $_GET['idu'] );
-	}
+	$usuario = obtenerColaboradorPorId( $dbh, $idpersona );
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -27,7 +23,7 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
-<link rel="stylesheet" type="text/css" href="../css1.css" />
+<link rel="stylesheet" type="text/css" href="css1.css" />
 
 <script>
 	function toggle (c) {
@@ -39,7 +35,7 @@
 
 <body>
 
-<?php require ('header.php'); ?>
+<?php require ('header2.php'); ?>
 
 <br>
 <center>
@@ -63,7 +59,7 @@
 					<tr>
 						<th colspan=2>Descripción</th>
 						<th>Referencia</th>
-						<th colspan="2">Inventario</th>
+						<th colspan="3">Inventario</th>
 					</tr>
 					<?php 
 						foreach ( $items_familia as $item ) {
@@ -85,6 +81,11 @@
 								<td> 
 									<a href="<?php echo $lnk_mov; ?>">
 										<i class="fas fa-list fa-2x" title="Movimientos del item"></i>
+									</a> 
+								</td>
+								<td> 
+									<a href="#!">
+										<i class="fas fa-update fa-2x" title="Actualizar disponibilidad"></i>
 									</a> 
 								</td>
 							</tr>

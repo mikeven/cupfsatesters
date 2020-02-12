@@ -1,6 +1,7 @@
 <?php
 ini_set( 'display_errors', 1 );	
 require ('../bd.php');
+include( 'fn/fn-sesion.php' );
 include ('fn/fn-pedidos.php');
 	
 ?>
