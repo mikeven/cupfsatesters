@@ -43,9 +43,9 @@
 
 	<br>
 	<center>
-		<div style="font-size:24px; margin-top:70px"><?php echo $colaborador["Nombre"]."(".$colaborador["NroCliente"].")"; ?></div>
-		<div style="font-size:18px;"> Total inventario: <b><?php echo $inventario["disponible"]; ?></b></div>
-		
+		<div style="font-size:24px; margin-top:70px">Inventario</div>
+		<div style="font-size:18px;"><?php echo $colaborador["Nombre"]."(".$colaborador["NroCliente"].")"; ?></div>
+		<div style="font-size:16px;"> Total inventario: <b><?php echo $inventario["disponible"]; ?></b></div>
 
 		<br>
 

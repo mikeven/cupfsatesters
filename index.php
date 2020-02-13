@@ -1,13 +1,44 @@
 <?php
 ini_set( 'display_errors', 1 );
 	
-require ( 'bd.php' );
-include( 'fn/fn-sesion.php' );
-include( 'fn/fn-items.php' );
+session_start();
+//Reviso si la sesion caducó
+if(!isset($_SESSION['idp'])) 
+	header('Location: login.php?s=0');
+
+require ('bd.php');
+
+$idpersona = $_SESSION["idp"];
+$nombre = $_SESSION["nombre"];
+$email = $_SESSION["email"];
+$unidades = $_SESSION['unidades'];
+$FirstDay = $_SESSION["firstday"];  
+$LastDay = $_SESSION["lastday"];  
+ 
+//Verifico si ya hizo pedido
+$sql = "SELECT * FROM Pedido where IdColaborador=$idpersona and Confirmado=1 and (Fecha BETWEEN '$FirstDay' AND '$LastDay')";
+//echo $sql;
+$Rs = mysqli_query ($dbh, $sql);
+$row = mysqli_fetch_assoc($Rs); 
+$rows = mysqli_num_rows($Rs);
+if ($rows > 0) { 
+	$pedido = $row['idPedido'];
+	header("Location:verPedido.php?c=$idpersona&p=$pedido");
+}
+//Listo
 
 //Cerrado
 //header("Location:cerrado.html");
 //exit;
+
+//Saco la cantidad por si ya hizo un pedido preliminar
+$sum = 0;
+$sql = "SELECT SUM(Cantidad1) AS TotAcum FROM PedidoDetalle as d, Pedido as p where p.idPedido = d.idPedido and p.IdColaborador=$idpersona and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')"; 
+$Rs = mysqli_query ($dbh, $sql);
+$row = mysqli_fetch_assoc($Rs); 
+if ($row['TotAcum'] > 0)
+	$sum = $row['TotAcum'];
+//Listo
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -35,6 +66,7 @@ include( 'fn/fn-items.php' );
 <link rel="stylesheet" type="text/css" href="popup/popup.css" />
 
 <link rel="stylesheet" type="text/css" href="css1.css" />
+<link rel="stylesheet" type="text/css" href="menu.css" />
 
 <style>
 <?php
@@ -70,44 +102,174 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 	background-color: rgb(195, 216, 231) !important;
 }
 
-.tooltip {
-    position: fixed;
-    top: 7em;
-    right: 0em;
-    color: #fff;
-    background-color: #4b81e8;
-    opacity: 1;
-    font-size: 13px;
-    width: 300px;
+#cantidad {
+	position:absolute;
+	right: 5px;
+	top: 37px;
+	color:#fff;
+	z-index:105;
+	font-size: 14px;
+}
+#cantidad input[type=text] {
+    width: 40px;
     height: 30px;
-    padding: 28px;
-    text-align: center;	
-	z-index: 999;
-	display: none;
+    padding: 7px 5px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    font-size: 14px;
+    text-align: center;
+    font-weight: bold;
 }
-.tooltip:before {
-    content:"\A";
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 15px solid #4b81e8;
-    position: absolute;
-    left: 260px;
-    top: -15px;
-	z-index: 999;
-	
-}
+
 </style>
 
-<script type="text/javascript" src="js/fn-jscript.js"></script>
-<script type="text/javascript">
-	function play(){
-		var audio = document.getElementById("welcome");
-		audio.play();
+<script>
+/*
+var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+if (isMobile) {
+	window.location.replace("mobile.html");
+} 
+*/
+$(document).ready(function() {
+
+		//Aqui marco la fila al cambiar los valores de los dropdowns
+	    $('select').change(function(){
+		var valor = 0;
+			
+		var classes = $(this).attr('class').split(' ');
+		txtClass = classes[0];	//la clase 0 (la primera) es el id
+		$("." + txtClass).each(function(){
+		    valor += Number($(this).val());
+		});
+		
+		var papa = $(this).parents("tr");
+		
+		if(valor > 0){
+			$(this).parents("tr").addClass("marcada");
+		}else{
+			$(this).parents("tr").removeClass("marcada");
+		}
+		//Hasta aqui
+		
+	    var sum = 0;	
+	    $('select :selected').each(function() {
+	        sum += Number($(this).val());
+	    });
+	    $("#cant").val(sum);
+		});
+		
+		$('#titFragancias').click(function(){
+			$('#Fragancias').toggle(1000, "swing");
+		});
+		
+		$('#titMakeup').click(function(){
+			$('#Makeup').toggle(1000, "swing");
+		});
+		
+		$('#titSkincare').click(function(){
+			$('#Skincare').toggle(1000, "swing");
+		});
+
+  
+        $(window).scroll(function(){
+            if ($(this).scrollTop() > 100) {
+                $('.scrollup').fadeIn();
+				$('.scrolldown').fadeIn();
+            } else {
+                $('.scrollup').fadeOut();
+				 $('.scrolldown').fadeOut();
+            }
+        });
+  
+        $('.scrollup').click(function(){
+            $("html, body").animate({ scrollTop: 0 }, 600);
+            return false;
+        });
+		
+		$('.scrolldown').click(function(){
+			$("html, body").animate({ scrollTop: $(document).height() }, 600);
+            return false;
+        });
+
+});
+
+function validar() {
+	
+	//Esta es la validacion de Skincare donde no puedes tomar el 100% de tu pedido de las misma linea
+	//class selectSC es para tomar solo los selects de Skincare
+	/*
+	var linea;
+	$('.selectSC').each(function() {
+		
+		linea = "";
+		var suma = 0;
+		var clase = "";
+		var classes = $(this).attr('class').split(' ');
+		clase = classes[1];	
+		
+		$("." + clase).each(function(){
+		    suma += Number($(this).val());
+		});
+		
+		if (suma >= <?php echo $unidades ?>) {
+			linea = clase;
+			return false;
+		}
+		
+	});
+	
+	if (linea != "") {
+		swal("No estamos listos", "No puedes pedir todas tus unidades de la misma línea: " + linea, "error");
+		return false;	
 	}
+	//Hasta aqui
+	*/
+	
+	var aux = Number($("#cant").val());
+/* no va para el primer envio
+	if (aux < <?php echo $unidades ?>) {
+        swal("No estamos listos", "Aún te quedan unidades por seleccionar.", "error");
+        return false;
+    }*/
+	/* es para el 1er envio */
+	if (aux == 0) {
+        swal("No estamos listos", "No has hecho tu selección.", "error");
+        return false;
+    }
+	/*
+	if (aux > <?php echo $unidades ?>) {
+        swal("No estamos listos", "Seleccionaste más unidades que las asignadas.", "error");
+        return false;
+    }
+	*/
+	
+	$( "#btSig" ).hide( "slow", function() {
+	  
+	 });
+
+	$('select').each(function() {
+	    
+	   if (this.value == '0')
+	        $(this).prop("disabled", true);
+	   else
+			$(this).prop("disabled", false);
+	   
+	});
+	
+	$( "#Listado" ).fadeOut( "slow", function() {
+	    $( "#form1" ).submit();
+	 });
+	
+}
+
 </script>
 
+<script type="text/javascript">
+function play(){
+	var audio = document.getElementById("welcome");
+	audio.play();
+}
+</script>
 </head>
 
 <body class="overlay">
@@ -120,7 +282,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 <div class="popScroll">
     <div class="popup">
         <span class="ribbon top-left ribbon-primary">
-        <small>2019</small>
+        <small>2020</small>
         </span> 
         <h1>Testers Cupfsa</h1>
         
@@ -136,79 +298,201 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 
 <?php require ('header.php'); ?>
 
-<div class="tooltip" id="tt1">Aquí podrás ver la cantidad de unidades seleccionadas.</div>
+<div id="cantidad">Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
 
 <div><a href="#" class="scrollup">Scroll</a><a href="#" class="scrolldown">Scroll</a></div>
 <form name="form1" id="form1" method="post" action="registraPedido.php">
 <div id="Listado">
 
 <!--Empieza Makeup -->
+<div id="titMakeup" class="product-details__title">Maquillaje &#8693;</div>
+<div id="Makeup" class="listadoPedido" style="display:none;">
 
-<?php 
-	while( $f = mysqli_fetch_assoc( $familias ) ){ 
-		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"] );
-?>
+	<table id="productos" align="center">
+		<tr>
+			<th colspan=3>Descripción</th>
+			<th>Referencia</th>
+		</tr>
+<?php
+$sql="SELECT * FROM Item  where Familia = 1 and Activo = 1"; 
+//echo $sql;
+
+$Rs = mysqli_query ($dbh, $sql);
+$rows = mysqli_num_rows($Rs);
+
+while($row=mysqli_fetch_assoc($Rs)){ 
+	$id = $row['idItem'];
+	$des1 = $row['Descripcion1'];
+	$des2 = $row['Descripcion2'];
+	$des3 = $row['Descripcion3'];
+	$ref1 = $row['Referencia1'];
 	
-	<div id="tit<?php echo $f["Nombre"]?>" class="product-details__title"><?php echo $f["Nombre"]?> &#8693;</div>
-	<div id="<?php echo $f["Nombre"]?>" class="listadoPedido" style="display:none;">
-		<table id="productos" align="center">
-			<tr>
-				<th colspan=4>Descripción</th>
-				<th>Referencia</th>
-			</tr>
-			<?php 
-				while( $item = mysqli_fetch_assoc( $items_familia ) ){ 
-					$row 	= $item;
-					$id 	= $row['idItem'];
+	//Empiezo loop del pedido de esa referencia
+	$marcada = "";
+	$cantidad1 = 0;
+	$sql="SELECT * FROM Pedido as p, PedidoDetalle as d where p.idPedido = d.idPedido and p.idColaborador = $idpersona and d.idItem = $id and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')"; 
+	$Rs2 = mysqli_query ($dbh, $sql);
+	$rows2 = mysqli_num_rows($Rs2);
+	
+	if ($rows2 > 0) {
+		$row2 = mysqli_fetch_assoc($Rs2); 
+		$cantidad1 = $row2['Cantidad1'];
+		$marcada = " class='marcada'";
+	}
 
-					$des2pegada = "";
-					$des2pegada = preg_replace( '/\s+/', '', $item['Descripcion2'] );
+		echo "<tr" . $marcada . ">"; 
+		echo "<td>" . $des1 . "</td>";
+		echo "<td>" . $des2 . "</td>";
+		echo "<td>" . $des3 . "</td>";
+		if ($ref1 <> "-") {
+				echo "<td align=right>" . $ref1 . " <select class='" . $id . "' name='s1-" . $id . "'>";
+				for ($x = 0; $x <= $unidades - 1; $x++) {
+					?>
+					<option value=<?php echo $x ?><?php if($cantidad1 == $x): ?> selected="selected"<?php endif; ?>><?php echo $x ?></option>
+					<?php
+				}
+				echo "</select></td>";
+		} else 
+				echo "<td>N/A</td>";	
+		echo "</tr>";
 
-					$marcada = "";
-					$cantidad1 = 0;
-					$sql="SELECT * FROM Pedido as p, PedidoDetalle as d where p.idPedido = d.idPedido and p.idColaborador = $idpersona and d.idItem = $id and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')"; 
-					$Rs2 = mysqli_query ($dbh, $sql);
-					$rows2 = mysqli_num_rows($Rs2);
-					
-					if ($rows2 > 0) {
-						$row2 = mysqli_fetch_assoc($Rs2); 
-						$cantidad1 = $row2['Cantidad1'];
-						$marcada = " class='marcada'";
-					}
-				?>
-					<tr <?php echo $marcada ?>>
-						<td> 
-							<?php if( existeArchivoImagen( $item['Referencia1'] ) ) { ?>
-								<img src="fotos/<?php echo $item['Referencia1']?>.JPEG" width="60px"> 
-							<?php } ?>
-						</td>
-						<td><?php echo $item['Descripcion1'] ?></td>
-						<td><?php echo $item['Descripcion2']?></td>
-						<td><?php echo $item['Descripcion3'] ?></td>
-						<?php if ( $item['Referencia1'] <> "-" ) { ?>
-							<td align="right">
-								<?php echo $item['Referencia1'] ?>
-								<select class='<?php echo $id." ".$des2pegada?> selectSC' name='s1-<?php echo $id?>'>
-									<?php 
-										for ( $x = 0; $x <= $unidades; $x++ ) { 
-											$sel = ""; if( $cantidad1 == $x ) $sel = "selected";
-									?>
-										<option value="<?php echo $x ?>" <?php echo $sel ?>>
-											<?php echo $x ?>
-										</option>
-									<?php } ?>
-								</select>
-							</td>
-						<?php } else { ?>
-							<td>N/A</td>
-						<?php } ?>
-					</tr>
-			<?php } ?>	
-		</table>
-	</div>
-	<div class="product-details__title" style="margin-top:10px"></div>
-	<!--Fin bloque familia -->
-<?php } ?>
+	}
+	?>	
+		
+	</table>
+	
+</div>
+
+<div class="product-details__title" style="margin-top:10px"></div>
+<!--Hasta aqui Makeup -->
+
+<!--Empieza Skincare -->
+<div id="titSkincare" class="product-details__title">Skincare &#8693;</div>
+<div id="Skincare" class="listadoPedido" style="display:none;">
+
+	<table id="productos" align="center">
+		<tr>
+			<th colspan=3>Descripción</th>
+			<th>Referencia</th>
+		</tr>
+<?php
+$sql="SELECT * FROM Item  where Familia = 2 and Activo = 1"; 
+//echo $sql;
+
+$Rs = mysqli_query ($dbh, $sql);
+$rows = mysqli_num_rows($Rs);
+
+while($row=mysqli_fetch_assoc($Rs)){ 
+	$id = $row['idItem'];
+	$des1 = $row['Descripcion1'];
+	$des2 = $row['Descripcion2'];
+	$des3 = $row['Descripcion3'];
+	$ref1 = $row['Referencia1'];
+
+	$des2pegada = "";
+	$des2pegada = preg_replace('/\s+/', '', $des2);
+	
+	//Empiezo loop del pedido de esa referencia
+	$marcada = "";
+	$cantidad1 = 0;
+	$sql="SELECT * FROM Pedido as p, PedidoDetalle as d where p.idPedido = d.idPedido and p.idColaborador = $idpersona and d.idItem = $id and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')"; 
+	$Rs2 = mysqli_query ($dbh, $sql);
+	$rows2 = mysqli_num_rows($Rs2);
+	
+	if ($rows2 > 0) {
+		$row2 = mysqli_fetch_assoc($Rs2); 
+		$cantidad1 = $row2['Cantidad1'];
+		$marcada = " class='marcada'";
+	}
+
+		echo "<tr" . $marcada . ">"; 
+		echo "<td>" . $des1 . "</td>";
+		echo "<td>" . $des2 . "</td>";
+		echo "<td>" . $des3 . "</td>";
+		if ($ref1 <> "-") {
+				echo "<td align=right>" . $ref1 . " <select class='" . $id . " " . $des2pegada . " selectSC' name='s1-" . $id . "'>";
+				for ($x = 0; $x <= $unidades - 1; $x++) {
+					?>
+					<option value=<?php echo $x ?><?php if($cantidad1 == $x): ?> selected="selected"<?php endif; ?>><?php echo $x ?></option>
+					<?php
+				}
+				echo "</select></td>";
+		} else 
+				echo "<td>N/A</td>";	
+		
+		echo "</tr>";
+
+	}
+	?>	
+		
+	</table>
+	
+</div>
+
+<div class="product-details__title" style="margin-top:10px"></div>
+<!--Hasta aqui Skincare -->
+
+<!--Empieza Fragancias -->
+<div id="titFragancias" class="product-details__title">Fragancias &#8693;</div>
+<div id="Fragancias" class="listadoPedido" style="display:none;">
+
+	<table id="productos" align="center">
+		<tr>
+			<th colspan=3>Descripción</th>
+			<th>Referencia</th>
+		</tr>
+<?php
+$sql="SELECT * FROM Item  where Familia = 3 and Activo = 1"; 
+//echo $sql;
+
+$Rs = mysqli_query ($dbh, $sql);
+$rows = mysqli_num_rows($Rs);
+
+while($row=mysqli_fetch_assoc($Rs)){ 
+	$id = $row['idItem'];
+	$des1 = $row['Descripcion1'];
+	$des2 = $row['Descripcion2'];
+	$des3 = $row['Descripcion3'];
+	$ref1 = $row['Referencia1'];
+	
+	//Empiezo loop del pedido de esa referencia
+	$marcada = "";
+	$cantidad1 = 0;
+	$sql="SELECT * FROM Pedido as p, PedidoDetalle as d where p.idPedido = d.idPedido and p.idColaborador = $idpersona and d.idItem = $id and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')"; 
+	$Rs2 = mysqli_query ($dbh, $sql);
+	$rows2 = mysqli_num_rows($Rs2);
+	
+	if ($rows2 > 0) {
+		$row2 = mysqli_fetch_assoc($Rs2); 
+		$cantidad1 = $row2['Cantidad1'];
+		$marcada = " class='marcada'";
+	}
+
+		echo "<tr" . $marcada . ">"; 
+		echo "<td>" . $des1 . "</td>";
+		echo "<td>" . $des2 . "</td>";
+		echo "<td style='min-width: 113px;'>" . $des3 . "</td>";
+		if ($ref1 <> "-") {
+				echo "<td align=right>" . $ref1 . " <select class='" . $id . "' name='s1-" . $id . "'>";
+				for ($x = 0; $x <= $unidades - 1; $x++) {
+					?>
+					<option value=<?php echo $x ?><?php if($cantidad1 == $x): ?> selected="selected"<?php endif; ?>><?php echo $x ?></option>
+					<?php
+				}
+				echo "</select></td>";
+		} else 
+				echo "<td>N/A</td>";	
+		echo "</tr>";
+
+	}
+	?>	
+		
+	</table>
+	
+</div>
+
+<div class="product-details__title" style="margin-top:10px"></div>
+<!--Hasta aqui Fragancias -->
 
 </div> <!--Cierro el listado-->
 <?php
@@ -216,13 +500,14 @@ mysqli_close($dbh);
 ?>
 
 <br />
-<div id="btSig" class="boton" onclick="validar()">SIGUIENTE</div>
+<div id="btSig" class="boton" onclick="validar()">Siguiente</div>
 <br /><br />
 
 </form>
 </center>
 
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <script src="popup/popup.js"></script>
 
 </body>
