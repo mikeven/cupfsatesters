@@ -1,8 +1,24 @@
 <div id="header">
-	<div><img style="margin-top:25px; margin-left: -15px" src="images/logo_white.png" width="138px"></div>
-	<div style="font-size:14px; text-align: right; padding-right: 15px; margin-top:-42px; line-height: 30px;">
+
+	<nav role="navigation">
+	  <div id="menuToggle">
+	 
+	    <input type="checkbox" />
+		    <span></span>
+		    <span></span>
+		    <span></span>
+	    
+	    <ul id="menu">
+	      <a href="index.php"><li>Solicitud</li></a>
+	      <a href="inventario.php"><li>Inventario</li></a>
+		  <a href="xsesion.php"><li>Salir</li></a>
+	    </ul>
+	  </div>
+	</nav>
+
+	<div style="font-size:14px; text-align: right; padding-right: 15px; margin-top:-20px; line-height: 30px;">
 		<div><?php echo $nombre?></div>
-		<div>Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
+		
 	</div>
 </div>
 <br>
