@@ -5,9 +5,8 @@ require ( 'bd.php' );
 include( 'fn/fn-sesion.php' );
 include( 'fn/fn-items.php' );
 
-//Cerrado
-//header("Location:cerrado.html");
-//exit;
+$titulo = "Solicitud de Testers";
+$familias_visibles = array( 1, 2, 3, 4 );
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -35,6 +34,7 @@ include( 'fn/fn-items.php' );
 <link rel="stylesheet" type="text/css" href="popup/popup.css" />
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="css1.css" />
+<link rel="stylesheet" type="text/css" href="menu.css" />
 
 <style>
 <?php
@@ -44,7 +44,6 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 	}
 //Hasta aqui
 ?>
-
 
 .scrollup{
     width:40px;
@@ -70,34 +69,6 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 	background-color: rgb(195, 216, 231) !important;
 }
 
-.tooltip {
-    position: fixed;
-    top: 7em;
-    right: 0em;
-    color: #fff;
-    background-color: #4b81e8;
-    opacity: 1;
-    font-size: 13px;
-    width: 300px;
-    height: 30px;
-    padding: 28px;
-    text-align: center;	
-	z-index: 999;
-	display: none;
-}
-.tooltip:before {
-    content:"\A";
-    width: 0;
-    height: 0;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-bottom: 15px solid #4b81e8;
-    position: absolute;
-    left: 260px;
-    top: -15px;
-	z-index: 999;
-	
-}
 </style>
 
 <script type="text/javascript" src="js/fn-jscript.js"></script>
@@ -134,9 +105,9 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 </div>
 <!-- welcome popup -->
 
-<?php require ('header2.php'); ?>
+<?php require ('header.php'); ?>
 
-<div class="tooltip" id="tt1">Aquí podrás ver la cantidad de unidades seleccionadas.</div>
+<div id="cantidad">Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
 
 <div><a href="#" class="scrollup">Scroll</a><a href="#" class="scrolldown">Scroll</a></div>
 <form name="form1" id="form1" method="post" action="registraPedido.php">
@@ -147,6 +118,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 <?php 
 	while( $f = mysqli_fetch_assoc( $familias ) ){ 
 		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"] );
+		if ( in_array( $f["idFamilia"], $familias_visibles ) ){
 ?>
 	
 	<div id="tit<?php echo $f["Nombre"]?>" class="product-details__title"><?php echo $f["Nombre"]?> &#8693;</div>
@@ -208,7 +180,11 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 	</div>
 	<div class="product-details__title" style="margin-top:10px"></div>
 	<!--Fin bloque familia -->
-<?php } ?>
+
+<?php 
+	} // Fin if in_array
+}	// Fin while $familias
+?>
 
 </div> <!--Cierro el listado-->
 <?php

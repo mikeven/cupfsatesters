@@ -61,7 +61,7 @@
 	<br>
 
 	<div id="Listado">
-
+		<input id="idcolaborador" type="hidden" name="id_colaborador" value="<?php echo $_GET['idu'] ?>">
 		<?php 
 			foreach ( $familias as $f ) {
 				$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"] );
@@ -85,6 +85,7 @@
 							$inventario = obtenerItemsInventario( $dbh,  $item['idItem'], $usuario["idColaborador"] );
 							if( $inventario['disponible'] ){
 								$cant = $inventario['disponible']; $fila++;
+								$top_u = topeUnidadesRestar( $cant );
 						?>
 							<tr class="<?php filaParImpar( $fila ) ?>">
 								<td> 

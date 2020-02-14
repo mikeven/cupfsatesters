@@ -91,7 +91,7 @@
 	}
 	/* ----------------------------------------------------------- */
 	function obtenerListaRegistros( $data ){
-		//Devuelve un arreglo con los resultados de un resultset de BD
+		// Devuelve un arreglo con los resultados de un resultset de BD
 		$lista_c = array();
 		if( $data ){
 			while( $c = mysqli_fetch_array( $data ) ){
@@ -102,9 +102,15 @@
 	}
 	/* ----------------------------------------------------------- */
 	function filaParImpar( $n ){
-		//
+		// Devuelve el nombre de una clase para las filas de tabla, según paridad de número de fila
 		$res = ( $n%2 == 0 ) ? "invpar" : "invimpar";
 		echo $res;
+	}
+	/* ----------------------------------------------------------- */
+	function topeUnidadesRestar( $dsp ){
+		// Devuelve el máx de unidades que se pueden retirar de acuerdo a la disponibilidad
+		$max = 5;
+		return ( $dsp >= $max  ) ? $max : $dsp;
 	}
 	/* ----------------------------------------------------------- */
 ?>

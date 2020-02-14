@@ -23,7 +23,7 @@
 	/* ----------------------------------------------------------- */
 	function obtenerItemsInventario( $dbh, $id_item ){
 		// Devuelve el inventario disponible de un item para un usuario
-		$sql = "select sum( iv.entrada )-sum( iv.salida ) disponible 
+		$sql = "select sum( ifnull(iv.entrada, 0)) - sum( ifnull(iv.salida, 0)) disponible 
 				from Testers.Inventario iv where iv.idItem = $id_item"; 
 
 		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
@@ -101,4 +101,15 @@
 		return $lista_c;
 	}
 	/* ----------------------------------------------------------- */
+	function filaParImpar( $n ){
+		// Devuelve el nombre de una clase para las filas de tabla, según paridad de número de fila
+		$res = ( $n%2 == 0 ) ? "invpar" : "invimpar";
+		echo $res;
+	}
+	/* ----------------------------------------------------------- */
+	function topeUnidadesRestar( $dsp ){
+		// Devuelve el máx de unidades que se pueden retirar de acuerdo a la disponibilidad
+		$max = 5;
+		return ( $dsp >= $max  ) ? $max : $dsp;
+	}
 ?>

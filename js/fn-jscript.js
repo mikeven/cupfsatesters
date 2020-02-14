@@ -139,6 +139,6 @@ function validar() {
 	
 	$( "#Listado" ).fadeOut( "slow", function() {
 	    $( "#form1" ).submit();
-	 });
+	});
 	
 }

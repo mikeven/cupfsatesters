@@ -10,7 +10,7 @@
 	    
 	    <ul id="menu">
 	      <a href="index.php"><li>Solicitud</li></a>
-	      <a href="inventario.php"><li>Inventario</li></a>
+	      <!-- <a href="inventario.php"><li>Inventario</li></a> -->
 		  <a href="xsesion.php"><li>Salir</li></a>
 	    </ul>
 	  </div>

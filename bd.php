@@ -11,5 +11,5 @@ mysqli_query($dbh, 'SET CHARACTER SET utf8');
 mysqli_query($dbh, "SET NAMES 'utf8'");
 /*-----------------------------------------------------------------------------------------------------------------------*/
 
-$titulo = "Solicitud de Testers";
+//$titulo = "Solicitud de Testers";
 ?>

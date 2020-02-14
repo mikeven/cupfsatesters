@@ -1,6 +1,6 @@
 <?php
 	/* ----------------------------------------------------------- */
-	/* Cupfsa Testers - Acceso de datos de referencias ----------- */
+	/* Cupfsa Testers - Acceso a datos de referencias ------------ */
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
 	function activarItem( $dbh, $id, $valor ){
