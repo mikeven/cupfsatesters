@@ -82,9 +82,10 @@
 					<?php 
 						foreach ( $items_familia as $item ) {
 							$lnk_mov = "movimiento_item_inventario.php?idc=$usuario[idColaborador]&iditem=$item[idItem]";
-							$inventario = obtenerItemsInventario( $dbh,  $item['idItem'], $usuario["idColaborador"] );
-							if( $inventario['disponible'] ){
-								$cant = $inventario['disponible']; $fila++;
+							$inventario_item = obtenerItemsInventario( $dbh,  $item['idItem'], $usuario["idColaborador"] );
+							
+							if( tieneMovimientoInventario( $inventario_item ) ){
+								$cant = totalDisponibleInv( $inventario_item ); $fila++;
 								$top_u = topeUnidadesRestar( $cant );
 						?>
 							<tr class="<?php filaParImpar( $fila ) ?>">
@@ -100,7 +101,7 @@
 								<td> <?php echo $cant ?> </td>
 								<td> 
 									<a href="<?php echo $lnk_mov; ?>">
-										<i class="fas fa-list fa-2x" title="Movimientos del item"></i>
+										<i class="fas fa-list fa-2x" title="Movimientos del item <?php echo $item['idItem']?>"></i>
 									</a> 
 								</td>
 								<td> 

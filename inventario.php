@@ -59,8 +59,6 @@
 
 <br>
 <center>
-	<div style="font-size:18px;"><?php echo $usuario["Nombre"]." (".$usuario["NroCliente"].")"; ?></div>
-	<br>
 
 	<div id="Listado">
 		<input id="idcolaborador" type="hidden" name="id_colaborador" value="<?php echo $idpersona ?>">
@@ -72,7 +70,7 @@
 		?>
 			
 			<div id="tit<?php echo $f["Nombre"]?>" class="product-details__title">
-				<?php echo $f["Nombre"]?> &#8693;
+				<?php echo $f["Nombre"]?>
 			</div>
 			<div id="<?php echo $f["Nombre"]?>" class="listadoPedido" style="position: relative;">
 				<table id="productos" align="center">
@@ -85,8 +83,9 @@
 						foreach ( $items_familia as $item ) {
 							$lnk_mov = "movimiento_item_inventario.php?idc=$usuario[idColaborador]&iditem=$item[idItem]";
 							$inventario = obtenerItemsInventario( $dbh,  $item['idItem'], $usuario["idColaborador"] );
-							if( $inventario['disponible'] ){
-								$cant = $inventario['disponible']; $fila++;
+							
+							if( tieneMovimientoInventario($inventario) ){
+								$cant = $inventario['entradas']-$inventario['salidas']; $fila++;
 								$top_u = topeUnidadesRestar( $cant );
 						?>
 							<tr class="<?php filaParImpar( $fila ) ?>">
@@ -102,7 +101,7 @@
 								<td> <?php echo $cant ?> </td>
 								<td> 
 									<a href="<?php echo $lnk_mov; ?>">
-										<i class="fas fa-list fa-2x" title="Movimientos del item"></i>
+										<i class="fas fa-list fa-2x" title="Movimientos del item <?php echo $item['idItem']?>"></i>
 									</a> 
 								</td>
 								<td> 
@@ -127,10 +126,14 @@
 		?>
 
 	</div> <!--Cierro el listado-->
-	<div class="boton" onclick="javascript:location.href='usuarios.php'" style="margin-top: 50px;">
-			<i class="fas fa-arrow-alt-circle-left" title="Volver a usuarios"></i> Volver
+	<div class="boton" onclick="javascript:location.href='index.php'" style="margin-top: 50px;">
+			<i class="fas fa-arrow-alt-circle-left" title="Volver a solicitud"></i> Volver
 	</div>
 </center>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="popup/popup.js"></script>
+
 </body>
 </html>
 

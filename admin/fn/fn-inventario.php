@@ -21,10 +21,16 @@
 		return obtenerListaRegistros( $Rs );
 	}
 	/* ----------------------------------------------------------- */
-	function obtenerItemsInventario( $dbh, $id_item ){
+	function tieneMovimientoInventario( $reg_item_inv ){
+		// Devuelve si un item de inventario posee algún movimiento asociado a un usuario
+		
+		return ( $reg_item_inv["entradas"] || $reg_item_inv["salidas"] );
+	}
+	/* ----------------------------------------------------------- */
+	function obtenerItemsInventario( $dbh, $id_item, $id_colaborador ){
 		// Devuelve el inventario disponible de un item para un usuario
-		$sql = "select sum( ifnull(iv.entrada, 0)) - sum( ifnull(iv.salida, 0)) disponible 
-				from Testers.Inventario iv where iv.idItem = $id_item"; 
+		$sql = "select sum( ifnull(iv.entrada, 0)) as entradas,  sum( ifnull(iv.salida, 0)) as salidas 
+				from Testers.Inventario iv where iv.idItem = $id_item and iv.idColaborador = $id_colaborador"; 
 
 		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
 	}
@@ -35,13 +41,19 @@
 		
 		foreach ( $items_familia as $item ) {
 			$inventario = obtenerItemsInventario( $dbh, $item['idItem'], $idColaborador );
-			if( $inventario['disponible'] ) {
+			if( tieneMovimientoInventario( $inventario ) ){
 				$posee_reg_inventario = true;
 				break;
 			}
 		}
 
 		return $posee_reg_inventario;
+	}
+	/* ----------------------------------------------------------- */
+	function totalDisponibleInv( $inventario_item ){
+		// Devuelve la resta de todas las entradas y salidas de un ítem en inventario de colaborador
+
+		return $inventario_item["entradas"] - $inventario_item["salidas"];
 	}
 	/* ----------------------------------------------------------- */
 	function obtenerMovimientosItemColaborador( $dbh, $idc, $idi ){

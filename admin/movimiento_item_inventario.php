@@ -10,8 +10,11 @@
 		header('Location: login.php?s=0');
 	else{
 		$item = obtenerItemPorId( $dbh, $_GET['iditem'] );
-		$inventario = obtenerItemsInventario( $dbh, $_GET['iditem'] );
+		
 		$colaborador = obtenerColaboradorPorId( $dbh, $_GET['idc'] );
+		$inventario = obtenerItemsInventario( $dbh, $_GET['iditem'], $_GET['idc'] );
+		if( tieneMovimientoInventario( $inventario ) )
+			$inventario_item = $inventario;
 		$movimientos = obtenerMovimientosItemColaborador( $dbh, $_GET['idc'], $_GET['iditem'] );
 	}
 ?>
@@ -45,7 +48,7 @@
 	<center>
 		<div style="font-size:24px; margin-top:70px">Inventario</div>
 		<div style="font-size:18px;"><?php echo $colaborador["Nombre"]."(".$colaborador["NroCliente"].")"; ?></div>
-		<div style="font-size:16px;"> Total inventario: <b><?php echo $inventario["disponible"]; ?></b></div>
+		<div style="font-size:16px;"> Total inventario: <b><?php echo totalDisponibleInv( $inventario_item ); ?></b></div>
 
 		<br>
 

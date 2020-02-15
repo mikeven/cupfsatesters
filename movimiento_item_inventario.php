@@ -9,8 +9,12 @@
 		header('Location: login.php?s=0');
 	else{
 		$item = obtenerItemPorId( $dbh, $_GET['iditem'] );
-		$inventario = obtenerItemsInventario( $dbh, $_GET['iditem'] );
+		$titulo = "Movimientos de Inventario ".$item["Referencia1"];
+		
 		$colaborador = obtenerColaboradorPorId( $dbh, $_GET['idc'] );
+		$inventario = obtenerItemsInventario( $dbh, $_GET['iditem'], $_GET['idc'] );
+		if( tieneMovimientoInventario( $inventario ) )
+			$inventario_item = $inventario;
 		$movimientos = obtenerMovimientosItemColaborador( $dbh, $_GET['idc'], $_GET['iditem'] );
 	}
 ?>
@@ -19,14 +23,14 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Movimiento - Cupfsa Testers</title>
+<title><?php echo $titulo; ?></title>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
-<link rel="stylesheet" type="text/css" href="css1.css" />
-
+<link rel="stylesheet" type="text/css" href="css1.css"/>
+<link rel="stylesheet" type="text/css" href="menu.css"/>
 
 <script>
 	function toggle (c) {
@@ -42,11 +46,10 @@
 
 	<br>
 	<center>
-		<div style="font-size:24px; margin-top:70px">
+		<div style="font-size:24px;">
 			<?php echo $item["Referencia1"]; ?>
 		</div>
-		<div style="font-size:16px;"> Total inventario: <b><?php echo $inventario["disponible"]; ?></b></div>
-		<div style="font-size:18px;"><?php echo $colaborador["Nombre"]."(".$colaborador["NroCliente"].")"; ?></div>
+		<div style="font-size:16px;"> Total inventario: <b><?php echo totalDisponibleInv( $inventario_item ); ?></b></div>
 
 		<br>
 
