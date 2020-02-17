@@ -15,7 +15,7 @@
 	if( isset( $_POST["restaritem"] ) ){
 		include( "../bd.php" );
 		
-		$detalle = "Registro desde cuenta de colaborador";
+		$detalle = "Indicado por cliente";
 		echo ingresarSalidaInventario( $dbh, $_POST["restaritem"], $_POST["cantidad"], $_POST["idc"], $detalle );
 	}
 	/* ----------------------------------------------------------------------------------- */

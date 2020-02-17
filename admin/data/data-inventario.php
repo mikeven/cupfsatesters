@@ -15,7 +15,7 @@
 	if( isset( $_POST["restaritem"] ) ){
 		include( "../../bd.php" );
 		
-		$detalle = "Registro desde administración";
+		$detalle = "Indicado por administrador";
 		echo ingresarSalidaInventario( $dbh, $_POST["restaritem"], $_POST["cantidad"], $_POST["idc"], $detalle );
 	}
 	/* ----------------------------------------------------------------------------------- */

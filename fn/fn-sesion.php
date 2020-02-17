@@ -15,4 +15,17 @@
 	$unidades = $_SESSION['unidades'];
 	$FirstDay = $_SESSION["firstday"];  
 	$LastDay = $_SESSION["lastday"];
+	
+	/* ----------------------------------------------------------- */
+	function diaValido(){
+		// Devuelve falso si la fecha del día no coincide con los días indicados para permitir pedidos
+		$valido = true;
+		$dia = date( "l" );
+		if ( ( $dia != "Monday" ) and ( $dia != "Tuesday" ) and ( $dia != "Wednesday" ) ) {
+			echo 'swal("Semana cerrada", "Solo se puede hacer pedido los días lunes, martes y miércoles.", "warning")';
+			$valido = false;
+		}
+
+		return $valido;
+	}
 ?>

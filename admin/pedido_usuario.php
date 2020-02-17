@@ -31,49 +31,47 @@
 <?php require ('header.php'); ?>
 
 <br>
-<div class="container">
-	<div id="Listado">
-		<center>
+	<center>
+
+		<div id="Listado" class="listadoUsuarios">
+			
 			<div style="font-size:24px; margin-top:70px"> <?php echo $pedido["Nombre"]; ?> </div>
 			<div style="font-size:18px;"> <?php echo $pedido["Fecha"]." (".$total.")"; ?> </div>
 			<br>
-			<div class="row">
-				<div class="col-sm-12 col-xs-12">
-					<table id="productos" align="center" style="width:60%">
-						<tr>
-							<th colspan=4>Descripción</th>
-							<th>Referencia</th>
-						</tr>
-						<?php 
-							while( $item_d = mysqli_fetch_assoc( $items_pedido ) ) { 
-								$familia = obtenerFamiliaPorId( $dbh, $item_d["idItem"] );
-						?>
-						<tr>
-							<td><?php echo $familia ?></td>
-							<td><?php echo $item_d["Descripcion1"] ?></td>
-							<td><?php echo $item_d["Descripcion2"] ?></td>
-							<td><?php echo $item_d["Descripcion3"] ?></td>
-							
-							<?php if ( $item_d["Referencia1"] <> "-" ) { ?>
-								<td align="right"> 
-									<?php echo $item_d["Referencia1"] ?>- <input type='text' value='<?php echo $item_d["Cantidad1"] ?>' readonly>
-								</td>
-							<?php } else { ?>
-								<td>N/A</td>;
-							<?php } ?>	
-						</tr>
-						<?php } ?>
-					</table>
-				</div>
-			</div>
+			<div class="product-details__title"> </div>
+			<table id="lista_usuarios" align="center" class="testertable">
+				<tr>
+					<th colspan=4>Descripción</th>
+					<th>Referencia</th>
+				</tr>
+				<?php 
+					while( $item_d = mysqli_fetch_assoc( $items_pedido ) ) { 
+						$familia = obtenerFamiliaPorId( $dbh, $item_d["idItem"] );
+				?>
+				<tr>
+					<td><?php echo $familia ?></td>
+					<td><?php echo $item_d["Descripcion1"] ?></td>
+					<td><?php echo $item_d["Descripcion2"] ?></td>
+					<td><?php echo $item_d["Descripcion3"] ?></td>
+					
+					<?php if ( $item_d["Referencia1"] <> "-" ) { ?>
+						<td align="right"> 
+							<?php echo $item_d["Referencia1"] ?>- <input type='text' value='<?php echo $item_d["Cantidad1"] ?>' readonly>
+						</td>
+					<?php } else { ?>
+						<td>N/A</td>;
+					<?php } ?>	
+				</tr>
+				<?php } ?>
+			</table>
+			<div class="product-details__title"> </div>
 			<div class="boton" onclick="javascript:location.href='usuario.php?id=<?php echo $idc?>'" style="margin: 50px 0;">
 				<i class="fas fa-arrow-alt-circle-left" title="Volver a usuarios"></i> Volver
 			</div>
-		</center>
-	</div>
-</div>
-
-</center>
+			
+		</div>
+		
+	</center>
 </body>
 </html>
 

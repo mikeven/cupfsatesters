@@ -139,6 +139,10 @@ select {
 	color:  #999;
 }
 
+/*Inventario*/
+	.inv_ent{ color: #147202; }
+	.inv_sal{ color: #ccc; }
+
 ::-webkit-scrollbar {
     -webkit-appearance: none;
     width: 10px;

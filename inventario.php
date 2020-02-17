@@ -84,8 +84,8 @@
 							$lnk_mov = "movimiento_item_inventario.php?idc=$usuario[idColaborador]&iditem=$item[idItem]";
 							$inventario = obtenerItemsInventario( $dbh,  $item['idItem'], $usuario["idColaborador"] );
 							
-							if( tieneMovimientoInventario($inventario) ){
-								$cant = $inventario['entradas']-$inventario['salidas']; $fila++;
+							if( tieneMovimientoInventario( $inventario ) ){
+								$cant = totalDisponibleInv( $inventario ); $fila++;
 								$top_u = topeUnidadesRestar( $cant );
 						?>
 							<tr class="<?php filaParImpar( $fila ) ?>">

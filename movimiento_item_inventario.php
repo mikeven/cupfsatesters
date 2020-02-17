@@ -9,7 +9,7 @@
 		header('Location: login.php?s=0');
 	else{
 		$item = obtenerItemPorId( $dbh, $_GET['iditem'] );
-		$titulo = "Movimientos de Inventario ".$item["Referencia1"];
+		$titulo = "Movimientos de Inventario";
 		
 		$colaborador = obtenerColaboradorPorId( $dbh, $_GET['idc'] );
 		$inventario = obtenerItemsInventario( $dbh, $_GET['iditem'], $_GET['idc'] );
@@ -44,25 +44,22 @@
 
 	<?php require ('header.php'); ?>
 
-	<br>
+	
 	<center>
-		<div style="font-size:24px;">
-			<?php echo $item["Referencia1"]; ?>
-		</div>
 		<div style="font-size:16px;"> Total inventario: <b><?php echo totalDisponibleInv( $inventario_item ); ?></b></div>
-
 		<br>
 
 		<div id="Listado" class="listadoUsuarios">
 			<div id="" class="product-details__title">
-				<?php echo $item["Descripcion1"]."/".$item["Descripcion2"]."/".$item["Descripcion3"]; ?>
+				#<?php 
+				echo $item["Referencia1"]."  -  ".$item["Descripcion1"]."/".$item["Descripcion2"]."/".$item["Descripcion3"]; ?>
 			</div>
 			<table id="lista_usuarios" align="center" class="testertable">
 				<tr>
-					<th align="left" width="20%">Fecha</th>
+					<th align="left" width="40%">Fecha</th>
 					<th align="center" width="10%">Cantidad</th>
 					<th width="20%" style="text-align: center;">Movimiento</th>
-					<th align="left" width="60%">Detalle</th>
+					<th align="left" width="30%">Detalle</th>
 				</tr>
 				<?php foreach( $movimientos as $m ){  $e_s = entrada_salida( $m ); ?>
 					<tr>

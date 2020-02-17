@@ -13,4 +13,6 @@ if (($pass == "CupfsA-2019") && ($login == "admin")) {
 	print "1";
 } else
 	print "2";
+
+	
 ?>

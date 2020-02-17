@@ -92,11 +92,11 @@
 		
 		if( $registro["entrada"] ){
 			$mov["cant"] = $registro["entrada"];
-			$mov["icon"] = "<i class='fas fa-arrow-up fa-2x' title='entrada'>";
+			$mov["icon"] = "<i class='fas fa-arrow-up fa-2x inv_ent' title='entrada'>";
 		}
 		if( $registro["salida"] ){
 			$mov["cant"] = $registro["salida"];
-			$mov["icon"] = "<i class='fas fa-arrow-down fa-2x' title='salida'>";
+			$mov["icon"] = "<i class='fas fa-arrow-down fa-2x inv_sal' title='salida'>";
 		}
 
 		return $mov;
@@ -122,7 +122,7 @@
 	function topeUnidadesRestar( $dsp ){
 		// Devuelve el máx de unidades que se pueden retirar de acuerdo a la disponibilidad
 		$max = 5;
-		return ( $dsp >= $max  ) ? $max : $dsp;
+		return ( $dsp >= $max  ) ? $dsp : $dsp;
 	}
 	/* ----------------------------------------------------------- */
 ?>

@@ -48,8 +48,10 @@ function restarUnidadesInventario( iditem, cant, idcol ){
         success: function( response ){
             console.log( response );
             if( response == 1 ) {
-                alert("Registro actualizado con éxito");
-                location.reload();
+                swal( "Registro actualizado con éxito", "", "success" ).then(function() {
+                    // Acción ejecutada después de cerrar alerta de mensaje
+                    location.reload();
+                });
             }
         }
     });

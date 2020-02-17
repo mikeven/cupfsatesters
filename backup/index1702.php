@@ -6,7 +6,6 @@ include( 'fn/fn-sesion.php' );
 include( 'fn/fn-items.php' );
 
 $titulo = "Solicitud de Testers";
-$clase_body = "overlay";
 $familias_visibles = array( 1, 2, 3, 4 );
 
 ?>
@@ -15,8 +14,7 @@ $familias_visibles = array( 1, 2, 3, 4 );
 
 <head>
 <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 <!-- Global site tag (gtag.js) - Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118040064-3"></script>
 <script>
@@ -26,18 +24,14 @@ $familias_visibles = array( 1, 2, 3, 4 );
 
   gtag('config', 'UA-118040064-3');
 
-</script>
-<script>
-
-$( document ).ready(function() {
-	<?php
-		$abierto_pedidos = diaValido();
-		if( !$abierto_pedidos ) $clase_body = "";
+  	<?php
+		$dia = date("l");
+		if (($dia != "Monday") and ($dia != "Tuesday") and ($dia != "Wednesday") ) {
+			echo 'swal("Semana cerrada", "Solo se puede hacer pedido los días lunes, martes y miércoles.", "warning")';
+			$cerrado = 1;
+		}
 	?>
-});
-
 </script>
-
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -95,14 +89,13 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 
 </head>
 
-<body class="<?php echo $clase_body ?>">
+<body class="overlay">
 
 <audio id="welcome">
   <source src="sounds/ariel.mp3" type="audio/mpeg">
 </audio>
 
 <!-- welcome popup -->
-<?php if( $abierto_pedidos ) { ?>
 <div class="popScroll">
     <div class="popup">
         <span class="ribbon top-left ribbon-primary">
@@ -119,21 +112,19 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
     </div>
 </div>
 <!-- welcome popup -->
-<?php } ?>
 
 <?php require ('header.php'); ?>
 
 <div id="cantidad">Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
 
 <div><a href="#" class="scrollup">Scroll</a><a href="#" class="scrolldown">Scroll</a></div>
-
 <form name="form1" id="form1" method="post" action="registraPedido.php">
 <div id="Listado">
 
 <!--Empieza Makeup -->
 
 <?php 
-	while( $abierto_pedidos && $f = mysqli_fetch_assoc( $familias ) ){ 
+	while( $f = mysqli_fetch_assoc( $familias ) ){ 
 		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"] );
 		if ( in_array( $f["idFamilia"], $familias_visibles ) ){
 ?>
@@ -209,16 +200,7 @@ mysqli_close($dbh);
 ?>
 
 <br />
-<?php if( $abierto_pedidos ) { ?>
-
-	<div id="btSig" class="boton" onclick="validar()">SIGUIENTE</div>
-
-<?php } else { ?>
-
-	<p><br /><br />Semana cerrada <br> 
-        Solo se puede hacer pedido los días lunes, martes y miércoles</p>
-        
-<?php } ?>
+<div id="btSig" class="boton" onclick="validar()">SIGUIENTE</div>
 <br /><br />
 
 </form>
