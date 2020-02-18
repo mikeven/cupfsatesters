@@ -2,15 +2,21 @@
 ini_set( 'display_errors', 1 );	
 require ('bd.php');
 
+
+
 if(isset($_GET['c'])) {
     $idpersona=$_GET["c"];
 } else {
 	require('fr_accesonp.php');
 }
 if(isset($_GET['p'])) {
+
     $pedido=$_GET["p"];
+    $titulo = "Pedido #".$pedido;
 } else {
+
 	require('fr_accesonp.php');
+	
 }
 
 $sql="SELECT * FROM Colaborador as c, Pedido as p where c.idColaborador = p.idColaborador and c.idColaborador = $idpersona and p.idPedido = $pedido and p.Confirmado=1"; 
@@ -64,6 +70,7 @@ mysqli_close($dbh);
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="css1.css" />
+<link rel="stylesheet" type="text/css" href="menu.css" />
 
 <script>
 

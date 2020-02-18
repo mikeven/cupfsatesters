@@ -7,6 +7,8 @@ if(!isset($_SESSION['idp']))
 	header('Location: login.php?s=0');
 	
 require ('bd.php');
+
+$titulo = "Pedido";
 	
 $idpersona = $_SESSION["idp"];
 $nombre = $_SESSION["nombre"];
@@ -95,14 +97,14 @@ if ($sum > $unidades) {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
-<link rel="stylesheet" type="text/css" href="css1.css" />
+<link rel="stylesheet" type="text/css" href="css1.css"/>
+<link rel="stylesheet" type="text/css" href="menu.css"/>
 
 <script>
 
 $( document ).ready(function() {
 	 $( "#Listado" ).show( "slow", function() {
 	 })		
-	 
 });
 
 
@@ -152,6 +154,8 @@ swal({
 <body>
 
 <?php require ('header.php'); ?>
+
+<div id="cantidad">Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
 
 <form name="form1" id="form1" method="post" action="">
 <div id="Listado" style="display:none">
