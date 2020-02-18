@@ -110,7 +110,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
         </span> 
         <h1>Testers Cupfsa</h1>
         
-        <p><br /><br />bienvenido <br> <?php echo $nombre ?><br /><br />
+        <p><br/><br/>bienvenido <br> <?php echo $nombre ?><br /><br />
         RECUERDEN TOMAR SUS PEDIDO DE FORMA ADECUADA EN BASE A LAS NECESIDADES DE SU PUNTO DE VENTA</p>
         
         <div style="position: absolute; bottom: 30px; left:0; right:0">
@@ -120,6 +120,8 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 </div>
 <!-- welcome popup -->
 <?php } ?>
+
+
 
 <?php require ('header.php'); ?>
 
@@ -159,7 +161,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 					$Rs2 = mysqli_query ($dbh, $sql);
 					$rows2 = mysqli_num_rows($Rs2);
 					
-					if ($rows2 > 0) {
+					if ( $rows2 > 0 ) {
 						$row2 = mysqli_fetch_assoc($Rs2); 
 						$cantidad1 = $row2['Cantidad1'];
 						$marcada = " class='marcada'";

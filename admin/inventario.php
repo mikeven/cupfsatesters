@@ -130,6 +130,10 @@
 			<i class="fas fa-arrow-alt-circle-left" title="Volver a usuarios"></i> Volver
 	</div>
 </center>
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="popup/popup.js"></script>
+
 </body>
 </html>
 

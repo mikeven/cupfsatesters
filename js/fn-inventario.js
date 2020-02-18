@@ -47,12 +47,15 @@ function restarUnidadesInventario( iditem, cant, idcol ){
         data:{ restaritem: iditem, cantidad: cant, idc: idcol },
         success: function( response ){
             console.log( response );
-            if( response == 1 ) {
-                swal( "Registro actualizado con éxito", "", "success" ).then(function() {
+            res = jQuery.parseJSON( response );
+            if( res.exito == 1 ){
+                swal( res.mje, "", "success" ).then(function() {
                     // Acción ejecutada después de cerrar alerta de mensaje
                     location.reload();
                 });
             }
+            else
+                swal( res.mje, "", "error" );
         }
     });
 }

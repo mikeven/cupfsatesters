@@ -13,6 +13,7 @@
 	      <!-- <a href="inventario.php"><li>Inventario</li></a> -->
 		  <a href="xsesion.php"><li>Salir</li></a>
 	    </ul>
+	    
 	  </div>
 	</nav>
 
@@ -25,3 +26,14 @@
 <center>
 <div style="font-size:24px; margin-top:70px"><?php echo $titulo ?></div>
 <br>
+
+<script type="text/javascript">
+
+	$(document).ready(function() {	
+		// Evento para invocar la activación de un ítem	
+		$("#menuToggle").on( "click", function(){
+	        $("#cantidad").fadeToggle();
+	    });
+	});
+
+</script>

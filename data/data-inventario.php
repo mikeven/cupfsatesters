@@ -16,7 +16,17 @@
 		include( "../bd.php" );
 		
 		$detalle = "Indicado por cliente";
-		echo ingresarSalidaInventario( $dbh, $_POST["restaritem"], $_POST["cantidad"], $_POST["idc"], $detalle );
+		$rsp = ingresarSalidaInventario( $dbh, $_POST["restaritem"], $_POST["cantidad"], $_POST["idc"], $detalle );
+
+		if( ( $rsp != 0 ) && ( $rsp != "" ) ){
+			$res["exito"] = 1;
+			$res["mje"] = "Registro actualizado con éxito!!";
+		} else {
+			$res["exito"] = 0;
+			$res["mje"] = "Error al actualizar inventario";
+		}
+
+		echo json_encode( $res );
 	}
 	/* ----------------------------------------------------------------------------------- */
 ?>
