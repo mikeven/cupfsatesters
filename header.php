@@ -28,12 +28,7 @@
 <br>
 
 <script type="text/javascript">
-
 	$(document).ready(function() {	
-		// Evento para invocar la activación de un ítem	
-		$("#menuToggle").on( "click", function(){
-	        $("#cantidad").fadeToggle();
-	    });
+		$("#menuToggle").on( "click", function(){ $("#cantidad").fadeToggle(); });
 	});
-
 </script>
