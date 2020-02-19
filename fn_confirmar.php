@@ -7,6 +7,8 @@ if(!isset($_SESSION['idp']))
 	print("3");
 
 require ('bd.php');
+
+$titulo = "Solicitud de Testers";
 	
 $idpersona = $_SESSION["idp"];
 $nombre = $_SESSION["nombre"];
@@ -16,6 +18,7 @@ $pedido = $_SESSION["pedido"];
 
 //Confirmo el pedido
 $sql = "UPDATE Pedido set Confirmado = 1 where idPedido=$pedido"; 
+
 $Rs = mysqli_query ($dbh, $sql);
 $afe = mysqli_affected_rows($dbh);
 
@@ -56,6 +59,6 @@ Cualquier consulta, no dudes en comunicarte con Eixa Rizcalla (eixa.rizcalla@cup
 ';
 
 //Cierro el body
-
-mail($email,$subject,$body,$headers);
+if( $idpersona != 32 )
+	mail( $email,$subject,$body,$headers );
 ?>

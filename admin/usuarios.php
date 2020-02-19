@@ -46,7 +46,10 @@ include( 'fn/fn-usuarios.php' );
 			<th align="left" width="20%">Email</th>
 			<th align="left" colspan="2" width="15%"></th>
 		</tr>
-		<?php while( $u = mysqli_fetch_assoc( $usuarios ) ){ ?>
+		<?php 
+			while( $u = mysqli_fetch_assoc( $usuarios ) ){ 
+				if( !in_array( $u["idColaborador"], array( 32 ) ) ) {
+		?>
 			<tr>
 				<td align="left"><?php echo $u["Nombre"] ?></td>
 				<td align="left"><?php echo $u['Usuario'] ?></td>
@@ -63,7 +66,10 @@ include( 'fn/fn-usuarios.php' );
 					</a>
 				</td>
 			</tr>
-		<?php } ?>	
+		<?php 
+				} // Cierre If: in_array
+			}// Cierre while: $usuarios
+		?>	
 	</table>	
 	<div class="product-details__title"></div>
 </div> <!--Cierro el listado-->

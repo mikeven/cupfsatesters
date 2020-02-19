@@ -8,7 +8,7 @@ if(!isset($_SESSION['idp']))
 	
 require ('bd.php');
 
-$titulo = "Pedido";
+$titulo = "Solicitud de Testers";
 	
 $idpersona = $_SESSION["idp"];
 $nombre = $_SESSION["nombre"];
@@ -123,7 +123,7 @@ swal({
     $.ajax({
   		 url: 'fn_confirmar.php',
       	 success: function(data) {
-		 //alert (data);
+		 console.log( data );
          	if (data == 1) {
 					$( "#botones" ).hide( "slow", function() {
 			 			swal("¡PEDIDO CONCLUIDO!", "", "success");
