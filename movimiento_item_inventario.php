@@ -56,9 +56,10 @@
 			</div>
 			<table id="lista_usuarios" align="center" class="testertable">
 				<tr>
-					<th align="left" width="40%">Fecha</th>
+					<th align="left" width="20%">Fecha</th>
 					<th align="center" width="10%">Cantidad</th>
 					<th width="20%" style="text-align: center;">Movimiento</th>
+					<th align="left" width="20%">Motivo</th>
 					<th align="left" width="30%">Detalle</th>
 				</tr>
 				<?php foreach( $movimientos as $m ){  $e_s = entrada_salida( $m ); ?>
@@ -66,6 +67,7 @@
 						<td align="left"><?php echo $m["fecha"] ?></td>
 						<td align="center"><?php echo $e_s['cant'] ?></td>
 						<td align="center"><?php echo $e_s['icon'] ?></td>
+						<td align="left"><?php echo $m['motivo'] ?></td>
 						<td align="left"><?php echo $m['detalle'] ?></td>
 					</tr>
 				<?php } ?>	

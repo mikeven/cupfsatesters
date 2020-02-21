@@ -13,6 +13,11 @@
 								<option value="<?php echo $i?>"><?php echo $i?></option>
 							<?php } ?>
 						</select>
+						<select id="mtv<?php echo $item['idItem']?>" name="motivo" class="ajuste_existencias_inv selmtv">
+							<?php foreach( $motivos as $m ) { if( $m['idMotivo'] != 6 ) { ?>
+								<option value="<?php echo $m['idMotivo']?>"><?php echo $m['nombre']?></option>
+							<?php } } ?>
+						</select>
 						<a href="#!" class="ex_ajusteinv" data-item="<?php echo $item['idItem']?>"> 
 							<i class="fas fa-chevron-circle-right fa-2x bot_cnfajuste" title="Guardar"></i>
 						</a>

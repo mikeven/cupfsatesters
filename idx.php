@@ -117,7 +117,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 
 <?php 
 	while( $f = mysqli_fetch_assoc( $familias ) ){ 
-		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"] );
+		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"], $_SESSION["listado"] );
 		if ( in_array( $f["idFamilia"], $familias_visibles ) ){
 ?>
 	

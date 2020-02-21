@@ -14,6 +14,7 @@
 		header('Location: login.php?s=0');
 	else{
 		$usuario = obtenerColaboradorPorId( $dbh, $_GET['idu'] );
+		$motivos = obtenerMotivosRetiroInventario( $dbh );
 	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -32,7 +33,7 @@
 	.target_ajinv{ display: none; }
 	.invimpar{ background: #f2f2f2 !important; }
 	.invpar{ background: #fff !important; }
-	.ajuste_existencias_inv{ height: 25px; }
+	.ajuste_existencias_inv{ height: 25px; } .selmtv{ width: 80px; }
 	.bot_cnfajuste{ 
 		vertical-align: bottom; 
 		margin-right: 16px;

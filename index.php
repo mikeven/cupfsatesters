@@ -136,7 +136,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 
 <?php 
 	while( $abierto_pedidos && $f = mysqli_fetch_assoc( $familias ) ){ 
-		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"] );
+		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"], $_SESSION["listado"] );
 		if ( in_array( $f["idFamilia"], $familias_visibles ) ){
 ?>
 	
@@ -161,7 +161,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 					$Rs2 = mysqli_query ($dbh, $sql);
 					$rows2 = mysqli_num_rows($Rs2);
 					
-					if ( $rows2 > 0 ) {
+					if ($rows2 > 0) {
 						$row2 = mysqli_fetch_assoc($Rs2); 
 						$cantidad1 = $row2['Cantidad1'];
 						$marcada = " class='marcada'";

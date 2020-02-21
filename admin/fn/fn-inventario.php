@@ -59,8 +59,9 @@
 	function obtenerMovimientosItemColaborador( $dbh, $idc, $idi ){
 		// Devuelve los registros de movimiento de inventario de un item asociado a un colaborador
 		
-		$sql = "SELECT entrada, salida, date_format( fecha, '%d/%m/%Y') as fecha, detalle 
-		FROM Inventario where idColaborador = $idc and idItem = $idi";
+		$sql = "SELECT i.entrada, i.salida, date_format( i.fecha, '%d/%m/%Y') as fecha, i.detalle, m.nombre as motivo 
+		FROM Inventario i, Motivo m where i.idColaborador = $idc and i.idItem = $idi and i.idMotivo = m.idMotivo
+		order by i.idInventario DESC";
 
 		return obtenerListaRegistros( mysqli_query ( $dbh, $sql ) );
 	}
@@ -123,6 +124,14 @@
 		// Devuelve el máx de unidades que se pueden retirar de acuerdo a la disponibilidad
 		$max = 5;
 		return ( $dsp >= $max  ) ? $dsp : $dsp;
+	}
+	/* ----------------------------------------------------------- */
+	function obtenerMotivosRetiroInventario( $dbh ){
+		// Devuelve la lista de motivos de retiros en los registros de inventario
+		$sql = "SELECT * FROM Motivo"; 
+		$Rs = mysqli_query( $dbh, $sql );
+
+		return obtenerListaRegistros( $Rs );
 	}
 	/* ----------------------------------------------------------- */
 ?>

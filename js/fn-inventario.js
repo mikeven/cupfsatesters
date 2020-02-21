@@ -16,8 +16,10 @@ $(document).ready(function() {
         var iditem = $(this).attr( "data-item" );
         var cant = $( "#e" + iditem ).val();
         var idcol = $( "#idcolaborador" ).val();
+        var motivo = $( "#mtv" + iditem ).val();
+
         if( cant > 0 )
-            restarUnidadesInventario( iditem, cant, idcol );
+            restarUnidadesInventario( iditem, cant, idcol, motivo );
         else
             swal( "Indique una cantidad válida", "", "error" );
     });
@@ -37,14 +39,14 @@ function activacionItem( idc, valor ){
     });
 }
 /* ----------------------------------------------------------- */
-function restarUnidadesInventario( iditem, cant, idcol ){
+function restarUnidadesInventario( iditem, cant, idcol, motivo ){
     //Invocación al servidor para restar unidades de ítems en inventario
     //(Registrar salida de inventario)
     
     $.ajax({
         type:"POST",
         url:"data/data-inventario.php",
-        data:{ restaritem: iditem, cantidad: cant, idc: idcol },
+        data:{ restaritem: iditem, cantidad: cant, idc: idcol, motivo: motivo },
         success: function( response ){
             console.log( response );
             res = jQuery.parseJSON( response );

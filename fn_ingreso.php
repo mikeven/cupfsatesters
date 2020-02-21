@@ -20,13 +20,14 @@ if ($rows == 1) {
 	$unidades = $row['Unidades'];
 	
 	session_start();
-	$_SESSION["acceso"] = "23";
-	$_SESSION["idp"] = $idp;
-	$_SESSION["nombre"] = $nombre ;
-	$_SESSION["email"] = $email ;
-	$_SESSION["unidades"]=$unidades;
-	$_SESSION["firstday"] = date("Y-m-d", strtotime('monday this week')) . " 00:00:00";  
-	$_SESSION["lastday"] = date("Y-m-d", strtotime('sunday this week')) . " 00:00:00";  
+	$_SESSION["acceso"] 	= "23";
+	$_SESSION["idp"] 		= $idp;
+	$_SESSION["nombre"] 	= $nombre ;
+	$_SESSION["email"] 		= $email ;
+	$_SESSION["unidades"] 	= $unidades;
+	$_SESSION["listado"] 	= $row['Listado'];
+	$_SESSION["firstday"] 	= date("Y-m-d", strtotime('monday this week')) . " 00:00:00";  
+	$_SESSION["lastday"] 	= date("Y-m-d", strtotime('sunday this week')) . " 00:00:00";  
 	print "1";
 
 } else {
