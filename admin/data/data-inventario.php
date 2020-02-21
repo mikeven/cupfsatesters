@@ -3,7 +3,6 @@
 	/* Cupfsa Testers - Acceso a datos de inventario ------------- */
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
-
 	/* ----------------------------------------------------------------------------------- */
 	function obtenerBalanceInventario( $dbh, $id_item, $id_colaborador ){
 		// Devuelve el inventario disponible de un item para un usuario
