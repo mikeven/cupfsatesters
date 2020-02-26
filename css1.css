@@ -106,6 +106,9 @@ select {
 	/*width: 115px;*/
 }
 
+.product-details_container{
+	max-width: 990px;
+}
 .product-details__title {
     color: #1d1d1d;
     font-size: 20px;

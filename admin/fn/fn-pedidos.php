@@ -58,12 +58,22 @@
 	function cantidadPedido( $dbh, $idp ){
 		// Devuelve la suma total de las cantidades de un pedido
 		$sql = "SELECT SUM(Cantidad1) AS TotAcum FROM PedidoDetalle where idPedido = $idp"; 
-		$Rs2 = mysqli_query ($dbh, $sql);
-		$row2 = mysqli_fetch_assoc($Rs2); 
+		$Rs2 = mysqli_query ( $dbh, $sql );
+		$row2 = mysqli_fetch_assoc( $Rs2 ); 
 		if ( $row2['TotAcum'] > 0 )
 			$sum = $row2['TotAcum'];
 
 		return $sum;
+	}
+	/* ----------------------------------------------------------- */
+	function iconoPedido( $pedido ){
+		// Retorna el ícono de estatus de pedido
+		$iconos = array(
+			0 		=> "<i class='fa fa-clock'></i>",
+			1 		=> "<i class='fa fa-check'></i>",
+		);
+
+		echo $iconos[$pedido["Estatus"]];
 	}
 	/* ----------------------------------------------------------- */
 	//Funcion iterar en las semanas
@@ -86,7 +96,7 @@
 		$rows2 = mysqli_num_rows($Rs2);
 		
 
-		echo "<div><div class='product-details__title'>$inicio2 - $fin2 ($rows2)</div>";
+		echo "<div><div class='product-details__title'>$inicio2 - $fin2 ($rows2) </div>";
 
 		$cont = 0;
 		$sql = "SELECT * FROM Pedido as p, Colaborador as c where c.idColaborador = p.idColaborador and p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')";
@@ -99,6 +109,7 @@
 			$idcliente = $row['idColaborador'];
 			$nombre = $row['Nombre']; 
 			$pedido = $row['idPedido'];
+			$lnk_chk = "check-pedido.php?pedido=$pedido";
 			
 			//Saco la cantidad de unidades de su pedido
 			$sum = 0; //unidades pedidas en su pedido
@@ -110,8 +121,13 @@
 			
 			//Listo
 		?>
-
-		<div class="product-details__title" onclick="toggle(<?php echo $idcliente ?>)"><?php echo $nombre ?> (<?php echo $sum ?>)</div>
+		<div class="product-details_container">
+			
+			<div class="product-details__title" onclick="toggle(<?php echo $idcliente ?>)">
+				<a href="<?php echo $lnk_chk ?>"><?php iconoPedido( $row ) ?></a>
+				<?php echo $nombre ?> (<?php echo $sum ?>)
+			</div> 
+		</div>
 
 		<?php
 			$sql="SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $pedido and d.idItem = i.idItem ";  
@@ -160,7 +176,7 @@
 			echo '<div class="product-details__title" style="margin-top:10px"></div></div>';
 		}
 		echo "<br><div class='boton' onclick=javascript:location.href='excel.php?i=" . $inicio . "&f=" . $fin . "'>Descargar</div><br><br>";
-	}// Cierro la función
+	}// Cierre de función
 	/* ----------------------------------------------------------- */
 	if( isset( $_GET["pedido"] ) ){
 
