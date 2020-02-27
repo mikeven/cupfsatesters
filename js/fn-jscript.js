@@ -107,7 +107,7 @@ function validar() {
 	*/
 	
 	var aux = Number($("#cant").val());
-/* no va para el primer envio
+	/* no va para el primer envio
 	if (aux < <?php echo $unidades ?>) {
         swal("No estamos listos", "Aún te quedan unidades por seleccionar.", "error");
         return false;
@@ -126,7 +126,7 @@ function validar() {
 	
 	$( "#btSig" ).hide( "slow", function() {
 	  
-	 });
+	});
 
 	$('select').each(function() {
 	    

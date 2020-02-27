@@ -30,22 +30,30 @@
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function contenidoEnRegistroPedido( $item, $items_registro ){
-		
-		
+		// Devuelve si un item [ref y cantidad] se encuentra en los items de un pedido
+		$contenido = 0;
 		foreach ( $items_registro as $reg ) {
-			if( $reg["referencia"] == ajusteFormatoReferencias( $item["referencia"] ) ){
-				echo $reg["referencia"]." = ".ajusteFormatoReferencias( $item["referencia"] )."<br>";
-				if( $reg["cantidad"] == $item["cantidad"] ){}
-			}
+			if( $reg["referencia"] == $item["referencia"] )
+				if( $reg["cantidad"] == $item["cantidad"] )
+					$contenido = 1;
 		}
+
+		return $contenido;
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function chequarItemsPedido( $items_archivo, $items_registro ){
-		// 
+		// Verifica si los ítems leídos por archivo coinciden con los ítems de registro del pedido
+		$coincidencias = 0;
+		$coincide = false;
 
-		foreach ( $items_archivo as $item ) {
-			contenidoEnRegistroPedido( $item, $items_registro );
+		if( count( $items_archivo ) == count( $items_registro ) ){
+			foreach ( $items_archivo as $item ){
+				$coincidencias += contenidoEnRegistroPedido( $item, $items_registro );
+			}
+			if( count( $items_archivo ) == $coincidencias ) $coincide = true;
 		}
+
+		return $coincide;
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function guardarArchivo( $file ){
@@ -72,7 +80,12 @@
 			$archivo = guardarArchivo( $_FILES['file'] );
 			$items_archivo = leerArchivo( $archivo, "" );
 			$items_registro = obtenerDetallePedidoPorId( $dbh, $_POST["idp"] );
-			chequarItemsPedido( $items_archivo, $items_registro );
+			$chk = chequarItemsPedido( $items_archivo["items"], $items_registro );
+
+			if( $chk ){
+				$rsp["exito"] = 1;
+				$rsp["imp"] = "Archivo coincide con pedido";
+			}
 		}else {
 			$rsp["exito"] = -1;
 			$rsp["imp"] = "Error en carga de archivo";

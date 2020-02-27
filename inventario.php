@@ -36,7 +36,7 @@
 	.target_ajinv{ display: none; }
 	.invimpar{ background: #f2f2f2 !important; }
 	.invpar{ background: #fff !important; }
-	.ajuste_existencias_inv{ height: 25px; } .selmtv{ width: 80px; }
+	.ajuste_existencias_inv{ height: 25px; } .selmtv{ width: 95px; }
 	.bot_cnfajuste{ 
 		vertical-align: bottom; 
 		margin-right: 16px;

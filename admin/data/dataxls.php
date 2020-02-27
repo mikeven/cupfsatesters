@@ -28,7 +28,7 @@ function leerArchivo( $archivo, $narchivo ){
 		while( $valor != "" ){
 			$reg["referencia"] 	= $objPHPExcel->getActiveSheet()->getCell( "B".$linea )->getValue();
 			$reg["cantidad"] 	= $objPHPExcel->getActiveSheet()->getCell( "C".$linea )->getValue();
-			$items[] 		= $reg;
+			$items[] 			= $reg;
 
 			$linea++;
 			$valor = $objPHPExcel->getActiveSheet()->getCell( "A".$linea )->getValue();
@@ -37,7 +37,7 @@ function leerArchivo( $archivo, $narchivo ){
 		$carga = 1;
 	}
 	$resultado["exito"] = $carga;
-	$resultado["imp"] = $items;
+	$resultado["items"] = $items;
 
 	return $resultado;
 }

@@ -6,10 +6,10 @@
 	/* ----------------------------------------------------------------------------------- */
 	function obtenerBalanceInventario( $dbh, $id_item, $id_colaborador ){
 		// Devuelve el inventario disponible de un item para un usuario
-		$sql = "select sum( ifnull(iv.entrada, 0)) as entradas,  sum( ifnull(iv.salida, 0)) as salidas 
+		$q = "select sum( ifnull(iv.entrada, 0)) as entradas,  sum( ifnull(iv.salida, 0)) as salidas 
 				from Testers.Inventario iv where iv.idItem = $id_item and iv.idColaborador = $id_colaborador"; 
-
-		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
+		
+		return mysqli_fetch_array( mysqli_query( $dbh, $q ) );
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function ingresarSalidaInventario( $dbh, $iditem, $cantidad, $idcolaborador, $detalle, $motivo ){
@@ -22,14 +22,15 @@
 	/* ----------------------------------------------------------------------------------- */
 	function esRestable( $dbh, $id_item, $id_colaborador, $cant ){
 		// Devuelve verdadero si es válido registrar la salida de inventario si el balance actual es positivo
-		$balance = obtenerBalanceInventario( $dbh, $id_item, $id_colaborador ); 
 
-		return ( ($balance["entradas"] - $balance["salidas"]) >= $cant ); 
+		$balance = obtenerBalanceInventario( $dbh, $id_item, $id_colaborador ); 
+		
+		return ( ( $balance["entradas"] - $balance["salidas"] ) >= $cant ); 
 	}
 	/* ----------------------------------------------------------------------------------- */
 	//Registrar salida de inventario
 	if( isset( $_POST["restaritem"] ) ){
-		include( "../../bd.php" );
+		include( "../bd.php" );
 		
 		$detalle = "Indicado por administrador";
 

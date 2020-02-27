@@ -34,7 +34,7 @@ $afe = mysqli_affected_rows($dbh);
 //borra en cascada los registros de PedidoDetalle, configurado en MySQL
 //Limpio
 
-$sql = "INSERT INTO Pedido values (NULL, $idpersona, NOW(), 0)";   
+$sql = "INSERT INTO Pedido values (NULL, $idpersona, NOW(), 0, 0)";   
 //echo $sql;
 $Rs = mysqli_query ($dbh, $sql);
 $afe = mysqli_affected_rows($dbh);

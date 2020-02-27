@@ -9,7 +9,7 @@
 				<td style="padding: 2px;">
 					<div>
 						<select id="e<?php echo $item['idItem']?>" name="cantidad" class="ajuste_existencias_inv">
-							<?php for( $i = 0; $i <= $top_u; $i++ ) { ?>
+							<?php for( $i = 1; $i <= $top_u; $i++ ) { ?>
 								<option value="<?php echo $i?>"><?php echo $i?></option>
 							<?php } ?>
 						</select>
