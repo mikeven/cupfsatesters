@@ -4,27 +4,42 @@
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------------------------------- */
-	function obtenerBalanceInventario( $dbh, $id_item, $id_colaborador ){
-		// Devuelve el inventario disponible de un item para un usuario
-		$sql = "select sum( ifnull(iv.entrada, 0)) as entradas,  sum( ifnull(iv.salida, 0)) as salidas 
-				from Testers.Inventario iv where iv.idItem = $id_item and iv.idColaborador = $id_colaborador"; 
-
-		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
-	}
-	/* ----------------------------------------------------------------------------------- */
-	function ingresarSalidaInventario( $dbh, $iditem, $cantidad, $idcolaborador, $detalle, $motivo ){
-		//Devuelve el registro de las órdenes registradas
-		$q = "insert into Inventario ( salida, fecha, idColaborador, idItem, detalle, idMotivo ) 
-		values( $cantidad, NOW(), $idcolaborador, $iditem, '$detalle', $motivo )";
+	function obtenerDetallePedidoPorId( $dbh, $idp ){
+		// Devuelve los registros de detalle de pedido dado su id
+		$q = "select i.Referencia1 as referencia, d.Cantidad1 as cantidad
+				from PedidoDetalle d, Item i where d.idItem = i.idItem and d.idPedido = $idp";
+		$Rs = mysqli_query ( $dbh, $q );
 		
-		return mysqli_query( $dbh, $q );
+		return obtenerListaRegistros( $Rs );
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function esRestable( $dbh, $id_item, $id_colaborador, $cant ){
-		// Devuelve verdadero si es válido registrar la salida de inventario si el balance actual es positivo
-		$balance = obtenerBalanceInventario( $dbh, $id_item, $id_colaborador ); 
+	function obtenerListaRegistros( $data ){
+		// Devuelve un arreglo con los resultados de un resultset de BD
+		$lista_c = array();
+		if( $data ){
+			while( $c = mysqli_fetch_array( $data ) ){
+				$lista_c[] = $c;	
+			}
+		}
+		return $lista_c;
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function contenidoEnRegistroPedido( $item, $items_registro ){
+		// 
 
-		return ( ($balance["entradas"] - $balance["salidas"]) >= $cant ); 
+		foreach ( $items_registro as $reg ) {
+			if( $reg["referencia"] == $item["referencia"] )
+				if( $reg["cantidad"] == $item["cantidad"] )
+		}
+	}
+
+	/* ----------------------------------------------------------------------------------- */
+	function chequarItemsPedido( $items_archivo, $items_registro ){
+		// 
+
+		foreach ( $items_archivo as $item ) {
+			contenidoEnRegistroPedido( $item, $items_registro );
+		}
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function guardarArchivo( $file ){
@@ -45,10 +60,13 @@
 
 	if( isset ( $_POST["idp"] ) ){
 		include( "dataxls.php" );
+		include( "../../bd.php" );
 
 		if( isset( $_FILES['file'] ) ){
 			$archivo = guardarArchivo( $_FILES['file'] );
-			$rsp = leerArchivo( $archivo, "" );
+			$items_archivo = leerArchivo( $archivo, "" );
+			$items_registro = obtenerDetallePedidoPorId( $dbh, $_POST["idp"] );
+			chequarItemsPedido( $items_archivo, $items_registro );
 		}else {
 			$rsp["exito"] = -1;
 			$rsp["imp"] = "Error en carga de archivo";

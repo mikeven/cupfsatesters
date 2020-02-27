@@ -11,30 +11,33 @@ function leerArchivo( $archivo, $narchivo ){
 	//PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 	$objReader = new PHPExcel_Reader_Excel2007();
 	$carga = 0; $archivo_cargado = false;
-	$xceltab = 0;	//Pestaña de archivo a leer
-	$linea = 2;
+	$imp = "";
+	$linea = 2;				// Línea inicial de lectura
 	
 	if( file_exists ( $archivo ) ){
 		$objPHPExcel = $objReader->load( $archivo );
-		$ntabs = $objPHPExcel->getSheetCount();
+		//$ntabs = $objPHPExcel->getSheetCount();
 		$archivo_cargado = true;
 	}else 
 		$carga = -3;
-	$imp = "";
+	$items = array();
 
 	if( ( $archivo_cargado ) ){
 
-		$val_l = $objPHPExcel->getActiveSheet()->getCell( "B".$linea )->getValue();
-		while( $val_l != "" ){
-			$imp .= $val_l."<br>";
+		$valor = $objPHPExcel->getActiveSheet()->getCell( "A".$linea )->getValue();
+		while( $valor != "" ){
+			$reg["referencia"] 	= $objPHPExcel->getActiveSheet()->getCell( "B".$linea )->getValue();
+			$reg["cantidad"] 	= $objPHPExcel->getActiveSheet()->getCell( "C".$linea )->getValue();
+			$items[] 		= $reg;
+
 			$linea++;
-			$val_l = $objPHPExcel->getActiveSheet()->getCell( "B".$linea )->getValue();
+			$valor = $objPHPExcel->getActiveSheet()->getCell( "A".$linea )->getValue();
 		}
 		
 		$carga = 1;
 	}
 	$resultado["exito"] = $carga;
-	$resultado["imp"] = $imp;
+	$resultado["imp"] = $items;
 
 	return $resultado;
 }
