@@ -24,15 +24,21 @@
 		return $lista_c;
 	}
 	/* ----------------------------------------------------------------------------------- */
+	function ajusteFormatoReferencias( $ref ){
+		// Devuelve un número sin los ceros a la izquierda
+		return $ref;
+	}
+	/* ----------------------------------------------------------------------------------- */
 	function contenidoEnRegistroPedido( $item, $items_registro ){
-		// 
-
+		
+		
 		foreach ( $items_registro as $reg ) {
-			if( $reg["referencia"] == $item["referencia"] )
-				if( $reg["cantidad"] == $item["cantidad"] )
+			if( $reg["referencia"] == ajusteFormatoReferencias( $item["referencia"] ) ){
+				echo $reg["referencia"]." = ".ajusteFormatoReferencias( $item["referencia"] )."<br>";
+				if( $reg["cantidad"] == $item["cantidad"] ){}
+			}
 		}
 	}
-
 	/* ----------------------------------------------------------------------------------- */
 	function chequarItemsPedido( $items_archivo, $items_registro ){
 		// 
