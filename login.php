@@ -85,6 +85,7 @@ function validar() {
   		 url: 'fn_ingreso.php',
 		 data: $('#form1').serialize(),
       	 success: function(data) {
+      	 	console.log(data);
          	if (data == 1) {
 				window.location.href="index.php";
 			} else
