@@ -22,7 +22,7 @@
 		$_SESSION["nombre"] 	= $row['Nombre'];
 		$_SESSION["email"] 		= $row['Email'];
 		$_SESSION["unidades"] 	= $row['Unidades'];
-		$_SESSION["listado"] 	= $row['Unidades'];
+		$_SESSION["listado"] 	= $row['Listado'];
 		$_SESSION["accesoinv"] 	= $row['ModInventario'];
 		$_SESSION["firstday"] 	= date("Y-m-d", strtotime('monday this week')) . " 00:00:00";  
 		$_SESSION["lastday"] 	= date("Y-m-d", strtotime('sunday this week')) . " 00:00:00";  

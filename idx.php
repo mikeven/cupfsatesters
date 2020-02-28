@@ -98,7 +98,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
         <p><br /><br />bienvenido <br> <?php echo $nombre ?><br /><br />
         RECUERDEN TOMAR SUS PEDIDO DE FORMA ADECUADA EN BASE A LAS NECESIDADES DE SU PUNTO DE VENTA</p>
         
-        <div style="position: absolute; bottom: 30px; left:0; right:0">
+        <div style="position: absolute; bottom: 30px; left:0; right:0;">
             <a id="close" class="boxi" onclick="play()">Comenzar</a>
         </div>
     </div>

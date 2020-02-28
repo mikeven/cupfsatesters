@@ -37,7 +37,7 @@
 	function obtenerItemsFamilia( $dbh, $familia, $listado ){
 		// Devuelve los ítems de una familia asociado a un listado de país
 		$sql = "SELECT * FROM Item  where Familia = $familia and Listado = '$listado' and Activo = 1"; 
-
+		
 		$Rs = mysqli_query ( $dbh, $sql );
 		$rows = mysqli_num_rows( $Rs );
 

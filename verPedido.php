@@ -1,7 +1,7 @@
 <?php
 ini_set( 'display_errors', 1 );	
 require ('bd.php');
-
+include( 'fn/fn-sesion.php' );
 
 
 if(isset($_GET['c'])) {
@@ -78,7 +78,6 @@ $( document ).ready(function() {
 	 $( "#Listado" ).show( "slow", function() {
 	 
 	 })		
-
 });
 
 </script>
@@ -88,6 +87,7 @@ $( document ).ready(function() {
 <body>
 
 <?php require ('header.php'); ?>
+<div id="cantidad">Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
 
 <div id="Listado" style="display:none">
 <div id="titFragancias" class="product-details__title">Tu pedido de la semana</div>
