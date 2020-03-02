@@ -25,6 +25,9 @@
 
 <link rel="stylesheet" type="text/css" href="../css1.css" />
 <script src="js/fn-pedido.js"></script>
+<style type="text/css">
+	.ctj_ok{ color: #147202; } .ctjerr{ color: #cf423b; } .tabla_ctj{ display: none; }
+</style>
 
 </head>
 
@@ -53,31 +56,37 @@
 			</div>
 
 			<div class="product-details__title"> </div>
-			<table id="lista_usuarios" align="center" class="testertable">
-				<tr>
-					<th colspan=4>Descripción</th>
-					<th>Referencia</th>
-				</tr>
-				<?php 
-					while( $item_d = mysqli_fetch_assoc( $items_pedido ) ) { 
-						$familia = obtenerFamiliaPorId( $dbh, $item_d["idItem"] );
-				?>
-				<tr>
-					<td><?php echo $familia ?></td>
-					<td><?php echo $item_d["Descripcion1"] ?></td>
-					<td><?php echo $item_d["Descripcion2"] ?></td>
-					<td><?php echo $item_d["Descripcion3"] ?></td>
-					
-					<?php if ( $item_d["Referencia1"] <> "-" ) { ?>
-						<td align="right"> 
-							<?php echo $item_d["Referencia1"] ?>- <input type='text' value='<?php echo $item_d["Cantidad1"] ?>' readonly>
-						</td>
-					<?php } else { ?>
-						<td>N/A</td>;
-					<?php } ?>	
-				</tr>
-				<?php } ?>
+
+			<table id="tabla_cotejo" align="center" class="testertable tabla_ctj" style="width: 50%;">
+				<thead>
+					<tr>
+						<th colspan="3">Contenido del archivo</th>
+					</tr>
+					<tr>
+						<th width="40%">Referencia</th>
+						<th width="40%">Cantidad</th>
+						<th width="20%">Resultado</th>
+					</tr>
+				</thead>
+				<tbody id="pedido_cotejado"></tbody>
+				
 			</table>
+
+			<table id="tabla_pedido" align="center" class="testertable tabla_ctj" style="width: 50%;">
+				<thead>
+					<tr>
+						<th colspan="3">Contenido del pedido en sistema</th>
+					</tr>
+					<tr>
+						<th width="40%">Referencia</th>
+						<th width="40%">Cantidad</th>
+						<th width="20%"></th>
+					</tr>
+				</thead>
+				<tbody id="registro_pedido"></tbody>
+				
+			</table>			
+
 			<div class="product-details__title"> </div>
 			<div class="boton" onclick="javascript:location.href='usuario.php?id=<?php echo $idc?>'" style="margin: 50px 0;">
 				<i class="fas fa-arrow-alt-circle-left" title="Volver a usuarios"></i> Volver

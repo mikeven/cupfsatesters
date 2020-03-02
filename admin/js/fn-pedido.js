@@ -38,10 +38,16 @@ function cargarPedido( frm ){
             $("#bot_frm_pedido").fadeOut(200);
         },
         success: function( data ) {
+            
             console.log(data);
             res = jQuery.parseJSON( data );
+
+            $(".tabla_ctj").fadeIn();
             $("#response-pedido").attr( "align", "center" );
             $("#response-pedido").html( res.imp );
+            $("#pedido_cotejado").html( res.ctj );
+            $("#registro_pedido").html( res.reg_p );
+
             if( res.exito == 1 ){
                 $("#vrepte").attr( "href", res.lnk_r );
                 $(".post_carga_r").fadeIn(200);

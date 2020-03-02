@@ -29,6 +29,40 @@
 		return $ref;
 	}
 	/* ----------------------------------------------------------------------------------- */
+	function iconoCoincidenciaCotejamiento( $valor ){
+		// Devuelve el ícono de resultado de cotejamiento de acuerdo al valor de coincidencia
+		$iconos = array(
+			0 		=> "<i class='fa fa-times ctjerr'></i>",
+			1 		=> "<i class='fa fa-check ctj_ok'></i>",
+		);
+
+		return $iconos[ $valor ];
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function elementoListadoCotejamiento( $item, $contenido ){
+		// Devuelve una fila a imprimirse en la tabla de cotejamiento de un pedido con los resultados del mismo
+
+		$ref 	= $item["referencia"];
+		$cant 	= $item["cantidad"];
+		$icono 	= iconoCoincidenciaCotejamiento( $contenido );
+
+		$fila = "<tr><td>$ref</td><td>$cant</td><td>$icono</td>";
+
+		return $fila;
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function elementosRegistroPedido( $items_registro ){
+		// Devuelve los elementos a imprimirse en tabla pedido contenido en registro de BD
+		$fila = "";
+		foreach ( $items_registro as $reg ) {
+			$ref 	= $reg["referencia"];
+			$cant 	= $reg["cantidad"];
+			$fila .= "<tr><td>$ref</td><td>$cant</td><td></td>";
+		}
+
+		return $fila;
+	}
+	/* ----------------------------------------------------------------------------------- */
 	function contenidoEnRegistroPedido( $item, $items_registro ){
 		// Devuelve si un item [ref y cantidad] se encuentra en los items de un pedido
 		$contenido = 0;
@@ -41,19 +75,27 @@
 		return $contenido;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function chequarItemsPedido( $items_archivo, $items_registro ){
+	function chequearItemsPedido( $items_archivo, $items_registro ){
 		// Verifica si los ítems leídos por archivo coinciden con los ítems de registro del pedido
+
 		$coincidencias = 0;
 		$coincide = false;
+		$cotejamiento = "";
 
-		if( count( $items_archivo ) == count( $items_registro ) ){
-			foreach ( $items_archivo as $item ){
-				$coincidencias += contenidoEnRegistroPedido( $item, $items_registro );
-			}
-			if( count( $items_archivo ) == $coincidencias ) $coincide = true;
+		foreach ( $items_archivo as $item ){
+			$contenido = contenidoEnRegistroPedido( $item, $items_registro );
+			$coincidencias 	+= $contenido;
+			$cotejamiento 	.= elementoListadoCotejamiento( $item, $contenido );
 		}
+		if( count( $items_archivo ) == $coincidencias ) $coincide = true;
+		
+		if( count( $items_archivo ) != count( $items_registro ) ) $coincide = false;
 
-		return $coincide;
+		$chequeo["coincidencia"] = $coincide;
+		$chequeo["cotejamiento"] = $cotejamiento;
+		$chequeo["regis_pedido"] = elementosRegistroPedido( $items_registro );
+
+		return $chequeo;
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function guardarArchivo( $file ){
@@ -77,14 +119,20 @@
 		include( "../../bd.php" );
 
 		if( isset( $_FILES['file'] ) ){
-			$archivo = guardarArchivo( $_FILES['file'] );
-			$items_archivo = leerArchivo( $archivo, "" );
+			$archivo 		= guardarArchivo( $_FILES['file'] );
+			$items_archivo 	= leerArchivo( $archivo, "" );
 			$items_registro = obtenerDetallePedidoPorId( $dbh, $_POST["idp"] );
-			$chk = chequarItemsPedido( $items_archivo["items"], $items_registro );
+			$chk 			= chequearItemsPedido( $items_archivo["items"], $items_registro );
+			$rsp["ctj"] 	= $chk["cotejamiento"];
+			$rsp["reg_p"] 	= $chk["regis_pedido"];
 
-			if( $chk ){
+			if( $chk["coincidencia"] ){
 				$rsp["exito"] = 1;
-				$rsp["imp"] = "Archivo coincide con pedido";
+				$rsp["imp"] = "<span class='ctj_ok'>Archivo coincide con pedido</span>";
+				
+			}else{
+				$rsp["exito"] = -2;
+				$rsp["imp"] = "<span class='ctjerr'>El archivo no coincide con el pedido</span>";
 			}
 		}else {
 			$rsp["exito"] = -1;
