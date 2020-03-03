@@ -90,7 +90,7 @@ $( document ).ready(function() {
 <div id="cantidad">Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
 
 <div id="Listado" style="display:none">
-<div id="titFragancias" class="product-details__title">Tu pedido de la semana</div>
+<div id="titFragancias" class="product-details__title">Tu pedido del mes</div>
 <div id="Fragancias" class="listadoPedido">
 
 	<table id="productos" align="center">

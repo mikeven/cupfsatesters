@@ -7,8 +7,7 @@ $dias = array("Domingo","Lunes","Martes","Miércoles","Jueves","Viernes","Sábad
 $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
 
 //Funcion iterar en las semanas
-function semanas( $inicio, $fin ) {
-
+function semanas($inicio, $fin) {
 	global $dbh;
 	global $dias;
 	global $meses;
@@ -48,8 +47,7 @@ function semanas( $inicio, $fin ) {
 	//Listo
 	?>
 
-	<div class="product-details__title" onclick="toggle(<?php echo $idcliente ?>)">
-		<?php echo $nombre ?> (<?php echo $sum ?>)</div>
+	<div class="product-details__title" onclick="toggle(<?php echo $idcliente ?>)"><?php echo $nombre ?> (<?php echo $sum ?>)</div>
 
 
 		<?php
@@ -149,74 +147,67 @@ $(document).ready(function() {
 //$fin = date("Y-m-d", strtotime('sunday this week'));
 $day = date('D');
 
-$inicio = strtotime('first day of this month');
-$fin = strtotime('last day of this month');
-semanas( $inicio, $fin );
+$inicio = strtotime('monday this week');
+$fin = strtotime('sunday this week');
+semanas ($inicio,$fin);
 
-/**/
-
-$inicio = strtotime('first day of this month -1 month'); 
-
-$fin = strtotime('last day of this month -1 month');
-echo "<br><br>";
-semanas( $inicio, $fin );
-
-/**/
 
 if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -2 month');
+  $inicio = strtotime('monday -1 week');
 else
-  $inicio = strtotime('monday -3 month');  
+  $inicio = strtotime('monday -2 week');  
 
-$fin = strtotime('sunday -2 month');
+$fin = strtotime('sunday -1 week');
 echo "<br><br>";
-semanas( $inicio, $fin );
+semanas ($inicio,$fin);
+
+
+if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
+  $inicio = strtotime('monday -2 week');
+else
+  $inicio = strtotime('monday -3 week');  
+
+$fin = strtotime('sunday -2 week');
+echo "<br><br>";
+semanas ($inicio,$fin);
 	
-/**/
+
 
 if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -3 month');
+  $inicio = strtotime('monday -3 week');
 else
-  $inicio = strtotime('monday -4 month');  
+  $inicio = strtotime('monday -4 week');  
 
-$fin = strtotime('sunday -3 month');
+$fin = strtotime('sunday -3 week');
 echo "<br><br>";
-semanas( $inicio, $fin );
-
-/**/
+semanas ($inicio,$fin);
 
 if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -4 month');
+  $inicio = strtotime('monday -4 week');
 else
-  $inicio = strtotime('monday -5 month');  
+  $inicio = strtotime('monday -5 week');  
 
-$fin = strtotime('sunday -4 month');
+$fin = strtotime('sunday -4 week');
 echo "<br><br>";
-semanas( $inicio, $fin );
-
-/**/
+semanas ($inicio,$fin);
 
 if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -5 month');
+  $inicio = strtotime('monday -5 week');
 else
-  $inicio = strtotime('monday -6 month');  
+  $inicio = strtotime('monday -6 week');  
 
-$fin = strtotime('sunday -5 month');
+$fin = strtotime('sunday -5 week');
 echo "<br><br>";
-semanas( $inicio, $fin );
-
-/**/
+semanas ($inicio,$fin);
 
 if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -6 month');
+  $inicio = strtotime('monday -6 week');
 else
-  $inicio = strtotime('monday -7 month');  
+  $inicio = strtotime('monday -7 week');  
 
-$fin = strtotime('sunday -6 month');
+$fin = strtotime('sunday -6 week');
 echo "<br><br>";
-semanas( $inicio, $fin );
-
-/**/
+semanas ($inicio,$fin);
 	
 mysqli_close($dbh);
 ?>	
