@@ -7,7 +7,7 @@ include( 'fn/fn-items.php' );
 
 $titulo = "Solicitud de Testers";
 $clase_body = "overlay";
-$familias_visibles = array( 1, 2, 3, 4 );
+$familias_visibles = array( 1, 2, 3, 4, 5 );
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -106,7 +106,7 @@ if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|c
 <div class="popScroll">
     <div class="popup">
         <span class="ribbon top-left ribbon-primary">
-        <small>2019</small>
+        <small>2020</small>
         </span> 
         <h1>Testers Cupfsa</h1>
         
@@ -218,7 +218,7 @@ mysqli_close($dbh);
 <?php } else { ?>
 
 	<p><br /><br />Semana cerrada <br> 
-        Solo se puede hacer pedido los días lunes, martes y miércoles</p>
+        Solo se puede hacer pedido de lunes a jueves</p>
         
 <?php } ?>
 <br /><br />

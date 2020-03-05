@@ -23,7 +23,7 @@
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
-<link rel="stylesheet" type="text/css" href="../css1.css" />
+<link rel="stylesheet" type="text/css" href="../css1.css"/>
 <script src="js/fn-pedido.js"></script>
 <style type="text/css">
 	.ctj_ok{ color: #147202; } .ctjerr{ color: #cf423b; } .tabla_ctj{ display: none; }
@@ -56,36 +56,42 @@
 			</div>
 
 			<div class="product-details__title"> </div>
-
-			<table id="tabla_cotejo" align="center" class="testertable tabla_ctj" style="width: 50%;">
-				<thead>
-					<tr>
-						<th colspan="3">Contenido del archivo</th>
-					</tr>
-					<tr>
-						<th width="40%">Referencia</th>
-						<th width="40%">Cantidad</th>
-						<th width="20%">Resultado</th>
-					</tr>
-				</thead>
-				<tbody id="pedido_cotejado"></tbody>
+			<table style="width: 50%;">
+				<tr>
+					<td>
+						<table id="tabla_cotejos" align="center" class="testertable tabla_ctj">
+							<thead>
+								<tr>
+									<th colspan="3">Cont. del pedido</th>
+								</tr>
+								<tr>
+									<th width="80%">Referencia</th>
+									<th width="10%">Cantidad</th>
+									<th width="10%"></th>
+								</tr>
+							</thead>
+							<tbody id="registro_pedido"></tbody>
+						</table>
+					</td>
+					<td>
+						<table id="tabla_cotejo" align="center" class="testertable tabla_ctj" >
+							<thead>
+								<tr>
+									<th colspan="3">Cont. del archivo</th>
+								</tr>
+								<tr>
+									<th width="80%">Referencia</th>
+									<th width="10%">Cantidad</th>
+									<th width="10%"></th>
+								</tr>
+							</thead>
+							<tbody id="pedido_cotejado"></tbody>
+						</table>
+					</td>
+				</tr>
 				
 			</table>
-
-			<table id="tabla_pedido" align="center" class="testertable tabla_ctj" style="width: 50%;">
-				<thead>
-					<tr>
-						<th colspan="3">Contenido del pedido en sistema</th>
-					</tr>
-					<tr>
-						<th width="40%">Referencia</th>
-						<th width="40%">Cantidad</th>
-						<th width="20%"></th>
-					</tr>
-				</thead>
-				<tbody id="registro_pedido"></tbody>
-				
-			</table>			
+						
 
 			<div class="product-details__title"> </div>
 			<div class="boton" onclick="javascript:location.href='usuario.php?id=<?php echo $idc?>'" style="margin: 50px 0;">

@@ -113,7 +113,7 @@ function validar() {
 
 swal({
   title: "¿Está seguro?",
-  text: "UNA VEZ CONFIRMADO ESTE PEDIDO NO PODRA REALIZAR OTRO HASTA LA PROXIMA SEMANA",
+  text: "UNA VEZ CONFIRMADO ESTE PEDIDO NO PODRA REALIZAR OTRO HASTA EL PROXIMO MES",
   icon: "warning",
   buttons: true,
   dangerMode: true,

@@ -21,7 +21,7 @@
 		// Devuelve falso si la fecha del día no coincide con los días indicados para permitir pedidos
 		$valido = true;
 		$dia = date( "l" );
-		if ( ( $dia != "Monday" ) and ( $dia != "Tuesday" ) and ( $dia != "Wednesday" ) ) {
+		if ( ( $dia != "Monday" ) and ( $dia != "Tuesday" ) and ( $dia != "Wednesday" ) and ( $dia != "Thursday" ) ) {
 			echo 'swal("Semana cerrada", "Solo se puede hacer pedido los días lunes, martes y miércoles.", "warning")';
 			$valido = false;
 		}
