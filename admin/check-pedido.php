@@ -27,6 +27,7 @@
 <script src="js/fn-pedido.js"></script>
 <style type="text/css">
 	.ctj_ok{ color: #147202; } .ctjerr{ color: #cf423b; } .tabla_ctj{ display: none; }
+	#tabla_matriz td{ vertical-align: top; }
 </style>
 
 </head>
@@ -56,7 +57,7 @@
 			</div>
 
 			<div class="product-details__title"> </div>
-			<table style="width: 50%;">
+			<table style="width: 50%;" id="tabla_matriz">
 				<tr>
 					<td>
 						<table id="tabla_cotejos" align="center" class="testertable tabla_ctj">

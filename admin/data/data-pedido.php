@@ -75,6 +75,29 @@
 		return $contenido;
 	}
 	/* ----------------------------------------------------------------------------------- */
+	/*function chequearItemsPedido( $items_archivo, $items_registro ){
+		// Verifica si los ítems leídos por archivo coinciden con los ítems de registro del pedido
+
+		$coincidencias = 0;
+		$coincide = false;
+		$cotejamiento = "";
+
+		foreach ( $items_archivo as $item ){
+			$contenido = contenidoEnRegistroPedido( $item, $items_registro );
+			$coincidencias 	+= $contenido;
+			$cotejamiento 	.= elementoListadoCotejamiento( $item, $contenido );
+		}
+		if( count( $items_archivo ) == $coincidencias ) $coincide = true;
+		
+		if( count( $items_archivo ) != count( $items_registro ) ) $coincide = false;
+
+		$chequeo["coincidencia"] = $coincide;
+		$chequeo["cotejamiento"] = $cotejamiento;
+		$chequeo["regis_pedido"] = elementosRegistroPedido( $items_registro );
+
+		return $chequeo;
+	}*/
+	/* ----------------------------------------------------------------------------------- */
 	function chequearItemsPedido( $items_archivo, $items_registro ){
 		// Verifica si los ítems leídos por archivo coinciden con los ítems de registro del pedido
 
