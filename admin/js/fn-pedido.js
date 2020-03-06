@@ -45,8 +45,8 @@ function cargarPedido( frm ){
             $(".tabla_ctj").fadeIn();
             $("#response-pedido").attr( "align", "center" );
             $("#response-pedido").html( res.imp );
-            $("#pedido_cotejado").html( res.ctj );
-            $("#registro_pedido").html( res.reg_p );
+            $("#pedido_cotejado").html( res.ctj_arc );
+            $("#registro_pedido").html( res.ctj_ped );
 
             if( res.exito == 1 ){
                 $("#vrepte").attr( "href", res.lnk_r );

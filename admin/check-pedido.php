@@ -26,7 +26,8 @@
 <link rel="stylesheet" type="text/css" href="../css1.css"/>
 <script src="js/fn-pedido.js"></script>
 <style type="text/css">
-	.ctj_ok{ color: #147202; } .ctjerr{ color: #cf423b; } .tabla_ctj{ display: none; }
+	.ctj_ok{ color: #147202; } .ctjerr{ color: #cf423b; } .inf_ok{ color: #ccc; } .ctjwrn{ color: #ef9241; }
+	.tabla_ctj{ display: none; }
 	#tabla_matriz td{ vertical-align: top; }
 </style>
 
@@ -60,7 +61,7 @@
 			<table style="width: 50%;" id="tabla_matriz">
 				<tr>
 					<td>
-						<table id="tabla_cotejos" align="center" class="testertable tabla_ctj">
+						<table id="tabla_cotejo_pedido" align="center" class="testertable tabla_ctj">
 							<thead>
 								<tr>
 									<th colspan="3">Cont. del pedido</th>
@@ -75,7 +76,7 @@
 						</table>
 					</td>
 					<td>
-						<table id="tabla_cotejo" align="center" class="testertable tabla_ctj" >
+						<table id="tabla_cotejo_archivo" align="center" class="testertable tabla_ctj" >
 							<thead>
 								<tr>
 									<th colspan="3">Cont. del archivo</th>
