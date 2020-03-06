@@ -121,17 +121,24 @@
 	function realizarCotejamientoArchivoPedido( $items_archivo, $items_registro ){
 		// Verifica si los ítems leídos por archivo coinciden con los ítems de registro del pedido
 
-		$coincide = false;
-		$cotejamiento_archivo = "";
+		$coincide_total 		= true;
+		
+		$cotejamiento_archivo 	= "";
 
+		// Recorrido por cada item del archivo se coteja con el pedido
 		foreach ( $items_archivo as $item ){
 			$contenido 					= contenidoEnRegistroPedido( $item, $items_registro );
 			$cotejamiento_archivo 		.= filaCotejamientoArchivo( $item, $contenido );
+			if( $contenido != 2 ) 		
+				$coincide_total = false;
 		}
 
-		$chequeo["coincidencia"] 		= 1;
+		$cotejamiento_pedido 			= chequearItemsArchivo( $items_archivo, $items_registro );
+
+		$chequeo["estatus_arch"] 		= $coincide_total;
 		$chequeo["revision_archivo"] 	= $cotejamiento_archivo;
-		$chequeo["revision_pedido"] 	= chequearItemsArchivo( $items_archivo, $items_registro );
+		$chequeo["estatus_pedi"] 		= $cotejamiento_pedido["contenido"];
+		$chequeo["revision_pedido"] 	= $cotejamiento_pedido["cotejamiento"];
 
 		return $chequeo;
 	}
@@ -139,15 +146,19 @@
 	function chequearItemsArchivo( $items_archivo, $items_registro ){
 		// Verifica si los ítems del pedido están contenidos en el archivo leído
 
-		$coincide = false;
+		$contenido = true;
 		$cotejamiento_pedido = "";
 
 		foreach ( $items_registro as $reg ){
-			$contenido 					= contenidoEnArchivo( $reg, $items_archivo );
-			$cotejamiento_pedido		.= filaCotejamientoPedido( $reg, $contenido );
+			$coincidencia 				= contenidoEnArchivo( $reg, $items_archivo );
+			if( $coincidencia == 0 ) 	$contenido = false;
+			$cotejamiento_pedido		.= filaCotejamientoPedido( $reg, $coincidencia );
 		}
 
-		return $cotejamiento_pedido;
+		$chequeo["cotejamiento"] 		= $cotejamiento_pedido;
+		$chequeo["contenido"] 			= $contenido;
+
+		return $chequeo;
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function guardarArchivo( $file ){
@@ -178,13 +189,17 @@
 			$rsp["ctj_arc"] = $cotejamiento["revision_archivo"];
 			$rsp["ctj_ped"] = $cotejamiento["revision_pedido"];
 
-			if( $chk["coincidencia"] ){
+			if( $cotejamiento["estatus_arch"] == true && $cotejamiento["estatus_pedi"] == true ){
 				$rsp["exito"] = 1;
 				$rsp["imp"] = "<span class='ctj_ok'>Archivo coincide con pedido</span>";
-				
 			}else{
-				$rsp["exito"] = -2;
-				$rsp["imp"] = "<span class='ctjerr'>El archivo no coincide con el pedido</span>";
+				if( $cotejamiento["estatus_pedi"] != true ){
+					$rsp["exito"] = -2;
+					$rsp["imp"] = "<span class='ctjerr'>El archivo no contiene alguno de los ítems del pedido</span>";
+				}else{
+					$rsp["exito"] = 3;
+					$rsp["imp"] = "<span class='ctj_ok'>El archivo posee algunas diferencias con el pedido</span>";
+				}
 			}
 		}else {
 			$rsp["exito"] = -1;

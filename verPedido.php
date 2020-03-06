@@ -4,14 +4,14 @@ require ('bd.php');
 include( 'fn/fn-sesion.php' );
 
 
-if(isset($_GET['c'])) {
+if( isset( $_GET['c'] ) ) {
     $idpersona=$_GET["c"];
 } else {
 	require('fr_accesonp.php');
 }
-if(isset($_GET['p'])) {
+if( isset( $_GET['p'] ) ) {
 
-    $pedido=$_GET["p"];
+    $pedido = $_GET["p"];
     $titulo = "Pedido #".$pedido;
 } else {
 
@@ -19,7 +19,9 @@ if(isset($_GET['p'])) {
 	
 }
 
-$sql="SELECT * FROM Colaborador as c, Pedido as p where c.idColaborador = p.idColaborador and c.idColaborador = $idpersona and p.idPedido = $pedido and p.Confirmado=1"; 
+$titulo = "Solicitud de Testers";
+
+$sql = "SELECT * FROM Colaborador as c, Pedido as p where c.idColaborador = p.idColaborador and c.idColaborador = $idpersona and p.idPedido = $pedido and p.Confirmado=1"; 
 //echo $sql;
 $Rs = mysqli_query ($dbh, $sql);
 $rows = mysqli_num_rows($Rs);
@@ -40,12 +42,17 @@ $row = mysqli_fetch_assoc($Rs);
 $sum = $row['TotAcum'];
 //Listo
 
-$sql="SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $pedido and d.idItem = i.idItem "; 
+$sql = "SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $pedido and d.idItem = i.idItem "; 
 //echo $sql;
-$Rs = mysqli_query ($dbh, $sql);
-$rows = mysqli_num_rows($Rs);
+$Rs = mysqli_query ( $dbh, $sql );
+$rows = mysqli_num_rows( $Rs );
 
-mysqli_close($dbh);
+mysqli_query( $dbh, "SET lc_time_names = 'es_VE'" );
+$sql = "SELECT DATE_FORMAT(Fecha,'%M') as mes from Pedido where idPedido = $pedido"; 
+$row = mysqli_fetch_assoc( mysqli_query ( $dbh, $sql ) ); 
+$mes = $row['mes'];
+
+mysqli_close( $dbh );
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -75,9 +82,9 @@ mysqli_close($dbh);
 <script>
 
 $( document ).ready(function() {
-	 $( "#Listado" ).show( "slow", function() {
+	$( "#Listado" ).show( "slow", function() {
 	 
-	 })		
+	})		
 });
 
 </script>
@@ -90,7 +97,7 @@ $( document ).ready(function() {
 <div id="cantidad">Unidades: <input type="text" id="cant" value="<?php echo $sum?>" readonly></div>
 
 <div id="Listado" style="display:none">
-<div id="titFragancias" class="product-details__title">Tu pedido del mes</div>
+<div id="titFragancias" class="product-details__title">Tu pedido del mes de <?php echo $mes; ?></div>
 <div id="Fragancias" class="listadoPedido">
 
 	<table id="productos" align="center">
@@ -101,7 +108,7 @@ $( document ).ready(function() {
 
 <?php
 
-while($row=mysqli_fetch_assoc($Rs)){ 
+while( $row = mysqli_fetch_assoc( $Rs ) ){ 
 		$id = $row['idItem'];
 		$des1 = $row['Descripcion1'];
 		$des2 = $row['Descripcion2'];
