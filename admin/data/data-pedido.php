@@ -30,24 +30,34 @@
 		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
 	}
 	/* ----------------------------------------------------------------------------------- */
+	function actualizarEstatusPedido( $dbh, $idpedido, $st ){
+		// Actualiza un pedido a estatus confirmado
+		$q = "update Pedido set Estatus = $st where idPedido = $idpedido";
+		
+		return mysqli_query( $dbh, $q );
+	}
+	/* ----------------------------------------------------------------------------------- */
 	function actualizarItemPedido( $dbh, $idpedido, $id_item, $cant ){
 		// Actualiza en bd la cantidad de un ítem dado id de pedido y referencia de ítem
 		$q = "update PedidoDetalle set Cantidad1 = $cant where idItem = $id_item";
-		//echo $q."\n";
-		//$Rs = mysqli_query ( $dbh, $q );
+		
+		return mysqli_query( $dbh, $q );
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function procesarActualizacionPedido( $dbh, $pedido ){
-		// 
+		// Procesa los ítems modificados desde archivo para actualizar pedido registrado
 
-		$idpedido 	= $pedido["idpedido_actarchivo"];
-		$items 		= $pedido["items"];
+		$idpedido 			= $pedido["idpedido_actarchivo"];
+		$items 				= $pedido["items"];
+		$actualizaciones 	= 0;
+
 		foreach ( $items as $it ) {
 			list( $ref, $cant ) = explode( '-', $it );
 			$data_item = obtenerIdItemPorReferencia( $dbh, $ref );
-			actualizarItemPedido( $dbh, $idpedido, $data_item["idItem"], $cant );
+			$actualizaciones += actualizarItemPedido( $dbh, $idpedido, $data_item["idItem"], $cant );
 		}
-		//actualizarEstatusPedido();
+		
+		return $actualizaciones;
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function ajusteFormatoReferencias( $ref ){
@@ -103,18 +113,6 @@
 
 		return $fila;
 	}
-	/* ----------------------------------------------------------------------------------- */
-	/*function elementosRegistroPedido( $items_registro ){
-		// Devuelve los elementos a imprimirse en tabla pedido contenido en registro de BD
-		$fila = "";
-		foreach ( $items_registro as $reg ) {
-			$ref 	= $reg["referencia"];
-			$cant 	= $reg["cantidad"];
-			$fila 	.= "<tr><td>$ref</td><td>$cant</td><td></td>";
-		}
-
-		return $fila;
-	}*/
 	/* ----------------------------------------------------------------------------------- */
 	function contenidoEnRegistroPedido( $item, $items_registro ){
 		// Devuelve si un item [ref y cantidad] se encuentra en los items de un pedido
@@ -238,14 +236,39 @@
 		echo json_encode( $rsp );
 	}
 	/* ----------------------------------------------------------------------------------- */
+	if( isset( $_POST["pedido_confirmado"] ) ){
+		include( "../../bd.php" );
+		
+		$idpedido = $_POST["pedido_confirmado"];
+		$resultado = actualizarEstatusPedido( $dbh, $idpedido, 1 );
+		if( $resultado ){
+			$rsp["exito"] = 1;
+			$rsp["imp"] = "<span class='ctj_ok'>Pedido confirmado con éxito</span>";
+		}else{
+			$rsp["exito"] = -1;
+			$rsp["imp"] = "Error al confirmar pedido";
+		}
+		
+		echo json_encode( $rsp );
+	}
+	/* ----------------------------------------------------------------------------------- */
 	if( isset( $_POST["pedido_archivo"] ) ){
 		include( "../../bd.php" );
 	
 		parse_str( $_POST["pedido_archivo"], $pedido );
-		$rsp = procesarActualizacionPedido( $dbh, $pedido );
+		if( isset($pedido["items"] ) ){
+			$regs_act = procesarActualizacionPedido( $dbh, $pedido );
+			if( $regs_act > 0 ){
+				actualizarEstatusPedido( $dbh, $pedido["idpedido_actarchivo"], 1 );
+				$rsp["exito"] = 1;
+				$rsp["imp"] = "<span class='ctj_ok'>Pedido confirmado con éxito</span>";
+			}
+		}else{
+			$rsp["exito"] = 0;
+			$rsp["imp"] = "Pedido confirmado sin cambios";
+		}
 		
-		
-		//echo json_encode( $rsp );
+		echo json_encode( $rsp );
 	}
 	/* ----------------------------------------------------------------------------------- */
 ?>

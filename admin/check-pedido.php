@@ -33,6 +33,9 @@
 	#tabla_matriz td{ vertical-align: top; }
 	#leyenda_check_pedido li, .tx_confirmacion{ list-style: none; font-size: 12px; text-align: left }
 	#cnf_pedido_archivo, #leyenda_check_pedido{ display: none; } .sec_confirmacion{ padding: 8px 0;  }
+	<?php if( $pedido["Estatus"] == 1 ) { ?>
+		.visible_estatus{ display: none; }
+	<?php } ?>
 </style>
 
 </head>
@@ -49,16 +52,18 @@
 			<div style="font-size:24px; margin-top:70px"> <?php echo $pedido["Nombre"]; ?> </div>
 			<div style="font-size:18px;"> <?php echo $pedido["Fecha"]." (".$total.")"; ?> </div>
 			<br>
-			<form id="frm-pedido">
-				<input id="id_pedido" type="hidden" name="pedido" value="<?php echo $pedido["idPedido"]; ?>">
-				<div class="form-group">
-                  <label for="exp_inv">Archivo de hoja de cálculo</label>
-                  <input type="file" class="form-control" id="archivo" placeholder="Reporte" name="archivo">
-                </div>
-			</form>
-			<div id="response-pedido" align="center"></div>
-			<div id="bot_frm_pedido" class="boton" style="margin: 5px 0;">
-				<i class="fas fa-file" title="Cotejar pedido con archivo"></i> Cotejar
+			<div class="visible_estatus">
+				<form id="frm-pedido" >
+					<input id="id_pedido" type="hidden" name="pedido" value="<?php echo $pedido["idPedido"]; ?>">
+					<div class="form-group">
+	                  <label for="exp_inv">Archivo de hoja de cálculo</label>
+	                  <input type="file" class="form-control" id="archivo" placeholder="Reporte" name="archivo">
+	                </div>
+				</form>
+				<div id="response-pedido" align="center"></div>
+				<div id="bot_frm_pedido" class="boton" style="margin: 5px 0;">
+					<i class="fas fa-file" title="Cotejar pedido con archivo"></i> Cotejar
+				</div>
 			</div>
 
 			<div class="product-details__title"> </div>
@@ -104,7 +109,7 @@
 						</form>
 					</td>
 				</tr>
-				<tr>
+				<tr class="visible_estatus">
 					<td id="cnf_pedido_db" colspan="2" class="sec_confirmacion">
 						<span class="tx_confirmacion">Confirmar pedido en sistema</span>
 						<div class="boton" id="bot_conf_pedido_bd">
@@ -133,7 +138,7 @@
 				</tr>
 				
 			</table>
-						
+			<div id="response-confirmacion-pedido" align="center"></div>
 			
 			<div class="product-details__title"> </div>
 			<div class="boton" onclick="javascript:location.href='ordenes.php'" style="margin: 50px 0;">

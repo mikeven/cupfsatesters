@@ -41,7 +41,7 @@
 		// Devuelve el registro de pedido dado su id
 
 		$sql = "SELECT p.idPedido, c.idColaborador, date_format( p.Fecha, '%d/%m/%Y') as Fecha, 
-		c.Nombre, c.Usuario, c.Email, p.Confirmado FROM Pedido p, Colaborador c 
+		c.Nombre, c.Usuario, c.Email, p.Confirmado, p.Estatus FROM Pedido p, Colaborador c 
 		where c.idColaborador = p.idColaborador and p.idPedido = $id";
 
 		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
