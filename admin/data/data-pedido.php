@@ -24,6 +24,32 @@
 		return $lista_c;
 	}
 	/* ----------------------------------------------------------------------------------- */
+	function obtenerIdItemPorReferencia( $dbh, $ref ){
+		// Devuelve el id de un ítem dado su referencia
+		$sql = "SELECT idItem from Item where Referencia1 = '$ref'";
+		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function actualizarItemPedido( $dbh, $idpedido, $id_item, $cant ){
+		// Actualiza en bd la cantidad de un ítem dado id de pedido y referencia de ítem
+		$q = "update PedidoDetalle set Cantidad1 = $cant where idItem = $id_item";
+		//echo $q."\n";
+		//$Rs = mysqli_query ( $dbh, $q );
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function procesarActualizacionPedido( $dbh, $pedido ){
+		// 
+
+		$idpedido 	= $pedido["idpedido_actarchivo"];
+		$items 		= $pedido["items"];
+		foreach ( $items as $it ) {
+			list( $ref, $cant ) = explode( '-', $it );
+			$data_item = obtenerIdItemPorReferencia( $dbh, $ref );
+			actualizarItemPedido( $dbh, $idpedido, $data_item["idItem"], $cant );
+		}
+		//actualizarEstatusPedido();
+	}
+	/* ----------------------------------------------------------------------------------- */
 	function ajusteFormatoReferencias( $ref ){
 		// Devuelve un número sin los ceros a la izquierda
 		return $ref;
@@ -57,8 +83,11 @@
 		$ref 	= $item["referencia"];
 		$cant 	= $item["cantidad"];
 		$icono 	= iconoCotejamientoArchivo( $contenido );
+		$campo 	= "";
+		if( $contenido == 1 ) // Coincide referencia, cambia la cantidad: Actualización de cantidad
+			$campo 	= "<input type='hidden' name='items[]' value='$ref-$cant'>";
 
-		$fila = "<tr><td>$ref</td><td>$cant</td><td>$icono</td>";
+		$fila = "<tr><td>$ref $campo</td><td>$cant</td><td>$icono</td>";
 
 		return $fila;
 	}
@@ -195,10 +224,10 @@
 			}else{
 				if( $cotejamiento["estatus_pedi"] != true ){
 					$rsp["exito"] = -2;
-					$rsp["imp"] = "<span class='ctjerr'>El archivo no contiene alguno de los ítems del pedido</span>";
+					$rsp["imp"] = "<span class='ctjerr'>Algunos ítems del pedido no están en el archivo</span>";
 				}else{
 					$rsp["exito"] = 3;
-					$rsp["imp"] = "<span class='ctj_ok'>El archivo posee algunas diferencias con el pedido</span>";
+					$rsp["imp"] = "<span class='ctj_ok'>El archivo posee cantidades diferentes al pedido</span>";
 				}
 			}
 		}else {
@@ -207,6 +236,16 @@
 		}
 		
 		echo json_encode( $rsp );
+	}
+	/* ----------------------------------------------------------------------------------- */
+	if( isset( $_POST["pedido_archivo"] ) ){
+		include( "../../bd.php" );
+	
+		parse_str( $_POST["pedido_archivo"], $pedido );
+		$rsp = procesarActualizacionPedido( $dbh, $pedido );
+		
+		
+		//echo json_encode( $rsp );
 	}
 	/* ----------------------------------------------------------------------------------- */
 ?>

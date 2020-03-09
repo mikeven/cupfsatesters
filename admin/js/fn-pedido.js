@@ -13,6 +13,10 @@ $(document).ready(function() {
         e.preventDefault();
         cargarPedido( $(this) );
     });
+
+    $("#bot_conf_pedido_archivo").on( "click", function(){
+       confirmarPedidoPorArchivo();
+    });
 });
 /* ----------------------------------------------------------- */
 function cargarPedido( frm ){
@@ -29,13 +33,12 @@ function cargarPedido( frm ){
         url: "data/data-pedido.php",
         type: 'POST',
         data: form_data,
-        contentType: false,
-        cache: false,
-        processData:false,
+        contentType: false, cache: false, processData:false,
         beforeSend: function () {
             $("#response-pedido").attr( "align", "center" );
             $("#response-pedido").html( wait ); 
             $("#bot_frm_pedido").fadeOut(200);
+            $(".sec_confirmacion").fadeOut();
         },
         success: function( data ) {
             
@@ -43,6 +46,8 @@ function cargarPedido( frm ){
             res = jQuery.parseJSON( data );
 
             $(".tabla_ctj").fadeIn();
+            $("#cnf_pedido_archivo").fadeIn();
+            $("#leyenda_check_pedido").fadeIn();
             $("#response-pedido").attr( "align", "center" );
             $("#response-pedido").html( res.imp );
             $("#pedido_cotejado").html( res.ctj_arc );
@@ -52,6 +57,26 @@ function cargarPedido( frm ){
                 $("#vrepte").attr( "href", res.lnk_r );
                 $(".post_carga_r").fadeIn(200);
             }
+        }
+    });
+}
+/* ----------------------------------------------------------- */
+function confirmarPedidoPorArchivo(){
+    // 
+    var wait = "...";
+    var frm_items_arch  = $('#items_pedido_archivo').serialize();
+
+    $.ajax({
+        url: "data/data-pedido.php",
+        type: 'POST',
+        data:{ pedido_archivo: frm_items_arch },
+        beforeSend: function () {
+            $("#response-pedido").html( wait ); 
+            //$("#bot_conf_pedido_archivo").fadeOut(200);
+        },
+        success: function( data ) {            
+           console.log(data);
+            //res = jQuery.parseJSON( data );
         }
     });
 }

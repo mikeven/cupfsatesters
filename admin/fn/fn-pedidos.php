@@ -47,6 +47,12 @@
 		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
 	}
 	/* ----------------------------------------------------------- */
+	function obtenerDetallePedidoPorId( $dbh, $idpedido ){
+		// Devuelve los ítems de un pedido
+		$sql = "SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $idpedido and d.idItem = i.idItem "; 
+		return mysqli_query ( $dbh, $sql );
+	}
+	/* ----------------------------------------------------------- */
 	function obtenerItemsPedidoFamilia( $familia ){
 		// Devuelve los ítems de una familia
 		$sql = "SELECT * FROM Item  where Familia = $familia and Activo = 1"; 
