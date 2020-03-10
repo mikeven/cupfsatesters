@@ -89,8 +89,8 @@
 		global $dias;
 		global $meses;
 		
-		$inicio2 = strtolower($dias[date('w',$inicio)]." ".date('d',$inicio)." de ".$meses[date('n',$inicio)-1]);
-		$fin2 = strtolower($dias[date('w',$fin)]." ".date('d',$fin)." de ".$meses[date('n',$fin)-1]);
+		$inicio2 = strtolower( date( 'd', $inicio )." ".$meses[date( 'n', $inicio ) - 1]." ".date( 'Y', $inicio ) );
+		$fin2 = strtolower( date( 'd', $fin )." ".$meses[date( 'n', $fin ) - 1]." ".date( 'Y', $fin ) );
 		
 		$FirstDay = date("Y-m-d", $inicio) . " 00:00:00";  
 		$LastDay = date("Y-m-d", $fin) . " 00:00:00";  
@@ -181,7 +181,10 @@
 			echo "</div>";
 			echo '<div class="product-details__title" style="margin-top:10px"></div></div>';
 		}
-		echo "<br><div class='boton' onclick=javascript:location.href='excel.php?i=" . $inicio . "&f=" . $fin . "'>Descargar</div><br><br>";
+		//echo "<br><div class='boton' onclick=javascript:location.href='excel.php?i=" . $inicio . "&f=" . $fin . "'>Descargar</div><br><br>";
+		echo "<br><div class='boton' onclick=javascript:location.href='excel.php?i=" . $inicio . "&f=" . $fin . "'>Testers</div>&nbsp;&nbsp;";
+		echo "<div class='boton' onclick=javascript:location.href='excel-plv.php?i=" . $inicio . "&f=" . $fin . "'>PLV</div>&nbsp;&nbsp;";
+		echo "<div class='boton' onclick=javascript:location.href='excel-insumos.php?i=" . $inicio . "&f=" . $fin . "'>Insumos</div><br><br>";
 	}// Cierre de función
 	/* ----------------------------------------------------------- */
 	if( isset( $_GET["pedido"] ) ){

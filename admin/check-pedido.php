@@ -33,6 +33,8 @@
 	#tabla_matriz td{ vertical-align: top; }
 	#leyenda_check_pedido li, .tx_confirmacion{ list-style: none; font-size: 12px; text-align: left }
 	#cnf_pedido_archivo, #leyenda_check_pedido{ display: none; } .sec_confirmacion{ padding: 8px 0;  }
+	#response-pedido{ padding: 30px 0 0px 0; }
+
 	<?php if( $pedido["Estatus"] == 1 ) { ?>
 		.visible_estatus{ display: none; }
 	<?php } ?>

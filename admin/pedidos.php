@@ -13,8 +13,8 @@ function semanas( $inicio, $fin ) {
 	global $dias;
 	global $meses;
 	
-	$inicio2 = strtolower($dias[date('w',$inicio)]." ".date('d',$inicio)." de ".$meses[date('n',$inicio)-1]);
-	$fin2 = strtolower($dias[date('w',$fin)]." ".date('d',$fin)." de ".$meses[date('n',$fin)-1]);
+	$inicio2 = strtolower( date( 'd', $inicio )." ".$meses[date( 'n', $inicio ) - 1]." ".date( 'Y', $inicio ) );
+	$fin2 = strtolower( date( 'd', $fin )." ".$meses[date( 'n', $fin ) - 1]." ".date( 'Y', $fin ) );
 	
 	$FirstDay = date("Y-m-d", $inicio) . " 00:00:00";  
 	$LastDay = date("Y-m-d", $fin) . " 00:00:00";  
@@ -96,7 +96,9 @@ function semanas( $inicio, $fin ) {
 			echo "</div>";
 			echo '<div class="product-details__title" style="margin-top:10px"></div></div>';
 	}
-	echo "<br><div class='boton' onclick=javascript:location.href='excel.php?i=" . $inicio . "&f=" . $fin . "'>Descargar</div><br><br>";
+	echo "<br><div class='boton' onclick=javascript:location.href='excel.php?i=" . $inicio . "&f=" . $fin . "'>Testers</div>&nbsp;&nbsp;";
+	echo "<div class='boton' onclick=javascript:location.href='excel-plv.php?i=" . $inicio . "&f=" . $fin . "'>PLV</div>&nbsp;&nbsp;";
+	echo "<div class='boton' onclick=javascript:location.href='excel-insumos.php?i=" . $inicio . "&f=" . $fin . "'>Insumos</div><br><br>";
 }// Cierro la función	
 	
 ?>
@@ -156,69 +158,58 @@ semanas( $inicio, $fin );
 /**/
 
 $inicio = strtotime('first day of this month -1 month'); 
-
 $fin = strtotime('last day of this month -1 month');
 echo "<br><br>";
 semanas( $inicio, $fin );
 
 /**/
 
-if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -2 month');
-else
-  $inicio = strtotime('monday -3 month');  
+$inicio = strtotime('first day of this month -2 month');   
 
-$fin = strtotime('sunday -2 month');
+$fin = strtotime('last day of this month -2 month');
 echo "<br><br>";
 semanas( $inicio, $fin );
 	
 /**/
 
-if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -3 month');
-else
-  $inicio = strtotime('monday -4 month');  
+$inicio = strtotime('first day of this month -3 month');   
 
-$fin = strtotime('sunday -3 month');
+$fin = strtotime('last day of this month -3 month'); 
+
 echo "<br><br>";
 semanas( $inicio, $fin );
 
 /**/
 
-if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -4 month');
-else
-  $inicio = strtotime('monday -5 month');  
+$inicio = strtotime('first day of this month -4 month');   
 
-$fin = strtotime('sunday -4 month');
+$fin = strtotime('last day of this month -4 month'); 
+
 echo "<br><br>";
 semanas( $inicio, $fin );
 
 /**/
 
-if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -5 month');
-else
-  $inicio = strtotime('monday -6 month');  
+$inicio = strtotime('first day of this month -5 month');   
 
-$fin = strtotime('sunday -5 month');
+$fin = strtotime('last day of this month -5 month'); 
+
 echo "<br><br>";
 semanas( $inicio, $fin );
 
 /**/
 
-if($day == 'Mon') //Esto es pq si es lunes la cuenta es distinta
-  $inicio = strtotime('monday -6 month');
-else
-  $inicio = strtotime('monday -7 month');  
+$inicio = strtotime('first day of this month -6 month');   
 
-$fin = strtotime('sunday -6 month');
+$fin = strtotime('last day of this month -6 month');  
+
+
 echo "<br><br>";
 semanas( $inicio, $fin );
 
 /**/
 	
-mysqli_close($dbh);
+mysqli_close( $dbh );
 ?>	
 			
 
