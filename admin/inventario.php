@@ -13,6 +13,7 @@
 	if( !isset( $_GET['idu'] ) ) 
 		header('Location: login.php?s=0');
 	else{
+		$colaboradores = obtenerColaboradores( $dbh );
 		$usuario = obtenerColaboradorPorId( $dbh, $_GET['idu'] );
 		$motivos = obtenerMotivosRetiroInventario( $dbh );
 	}
@@ -30,10 +31,10 @@
 
 <link rel="stylesheet" type="text/css" href="../css1.css" />
 <style type="text/css">
-	.target_ajinv{ display: none; }
+	.target_ajinv, .selcol{ display: none; }
 	.invimpar{ background: #f2f2f2 !important; }
 	.invpar{ background: #fff !important; }
-	.ajuste_existencias_inv{ height: 25px; } .selmtv{ width: 95px; }
+	.ajuste_existencias_inv{ height: 25px; } .selmtv{ width: 95px; } .selcol{ width: 105px; }
 	.bot_cnfajuste{ 
 		vertical-align: bottom; 
 		margin-right: 16px;

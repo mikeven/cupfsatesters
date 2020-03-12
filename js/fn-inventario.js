@@ -14,14 +14,27 @@ $(document).ready(function() {
     $(".ex_ajusteinv").on( "click", function(){
         // Evento para invocar restar unidades de inventario en ítems
         var iditem = $(this).attr( "data-item" );
+        var colaborador = '';
         var cant = $( "#e" + iditem ).val();
         var idcol = $( "#idcolaborador" ).val();
         var motivo = $( "#mtv" + iditem ).val();
+        if( motivo == 5 )
+            colaborador = $( "#ct" + iditem ).val();
 
         if( cant > 0 )
-            restarUnidadesInventario( iditem, cant, idcol, motivo );
+            restarUnidadesInventario( iditem, cant, idcol, motivo, colaborador );
         else
             swal( "Indique una cantidad válida", "", "error" );
+    });
+
+    $(".selmtv").on( "change", function(){
+        // Evento que muestra/oculta lista de colaboradores dependiendo del motivo
+        var lista_colaboradores = $( "#" + $(this).attr("data-lista") );
+        if( $(this).val() == 5 ){
+            $(lista_colaboradores).fadeIn();
+        }else{
+            $(lista_colaboradores).fadeOut();
+        }
     });
 });
 /* ----------------------------------------------------------- */
@@ -39,14 +52,14 @@ function activacionItem( idc, valor ){
     });
 }
 /* ----------------------------------------------------------- */
-function restarUnidadesInventario( iditem, cant, idcol, motivo ){
+function restarUnidadesInventario( iditem, cant, idcol, motivo, idcoltraspaso ){
     //Invocación al servidor para restar unidades de ítems en inventario
     //(Registrar salida de inventario)
     
     $.ajax({
         type:"POST",
         url:"data/data-inventario.php",
-        data:{ restaritem: iditem, cantidad: cant, idc: idcol, motivo: motivo },
+        data:{ restaritem: iditem, cantidad: cant, idc: idcol, motivo: motivo, coltraspaso: idcoltraspaso },
         success: function( response ){
             console.log( response );
             res = jQuery.parseJSON( response );
