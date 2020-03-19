@@ -68,7 +68,7 @@
 	function iconoCotejamientoArchivo( $valor ){
 		// Devuelve el ícono de resultado de cotejamiento de acuerdo al valor de coincidencia
 		$iconos = array(
-			0 		=> "<i class='fa fa-plus inf_ok'></i>",
+			0 		=> "<i class='fa fa-times inf_ok'></i>",
 			1 		=> "<i class='fa fa-exclamation ctjwrn'></i>",
 			2 		=> "<i class='fa fa-check ctj_ok'></i>",
 		);
@@ -79,8 +79,7 @@
 	function iconoCotejamientoPedido( $valor ){
 		// Devuelve el ícono de resultado de cotejamiento de acuerdo al valor de coincidencia
 		$iconos = array(
-			-1 		=> "<i class='fa fa-minus ctjerr'></i>",
-			0 		=> "",
+			0 		=> "<i class='fa fa-times ctjerr'></i>",
 			1 		=> "<i class='fa fa-exclamation ctjwrn'></i>",
 			2 		=> "<i class='fa fa-check ctj_ok'></i>",
 		);
@@ -88,61 +87,49 @@
 		return $iconos[ $valor ];
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function filaCotejamientoArchivo( $item ){
+	function filaCotejamientoArchivo( $item, $contenido ){
 		// Devuelve una fila a imprimirse en la tabla de cotejamiento del archivo con los resultados del mismo
 
 		$ref 	= $item["referencia"];
 		$cant 	= $item["cantidad"];
-		$icono 	= iconoCotejamientoArchivo( $item["est_contenido"] );
+		$icono 	= iconoCotejamientoArchivo( $contenido );
 		$campo 	= "";
-		
-		if( $item["est_contenido"] == 1 ) // Coincide referencia, cambia la cantidad: Actualización de cantidad
+		if( $contenido == 1 ) // Coincide referencia, cambia la cantidad: Actualización de cantidad
 			$campo 	= "<input type='hidden' name='items[]' value='$ref-$cant'>";
-		if( $item["est_contenido"] == 0 ) // Nueva referencia, se agrega item al pedido existente
-			$campo 	= "<input type='hidden' name='nitems[]' value='$ref-$cant'>";
 
 		$fila = "<tr><td>$ref $campo</td><td>$cant</td><td>$icono</td>";
 
 		return $fila;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function filaCotejamientoPedido( $item  ){
+	function filaCotejamientoPedido( $item, $contenido ){
 		// Devuelve una fila a imprimirse en la tabla de cotejamiento del pedido con los resultados del mismo
 
 		$ref 	= $item["referencia"];
 		$cant 	= $item["cantidad"];
-		$icono 	= iconoCotejamientoPedido( $item["est_contenido"] );
+		$icono 	= iconoCotejamientoPedido( $contenido );
 
 		$fila = "<tr><td>$ref</td><td>$cant</td><td>$icono</td>";
 
 		return $fila;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function estaContenidoEnRegistroPedido( $item, $items_registro ){
+	function contenidoEnRegistroPedido( $item, $items_registro ){
 		// Devuelve si un item [ref y cantidad] se encuentra en los items de un pedido
-		$elem_item["est_contenido"] = 0;
-		$elem_item["referencia"] 	= "-";
-		$elem_item["cantidad"] 		= "-";
+		$coincide = 0;
 
 		foreach ( $items_registro as $reg ) {
-
 			if( $reg["referencia"] == $item["referencia"] ){
-				
-				$elem_item["est_contenido"] = 1; 
-				$elem_item["referencia"] 	= $item["referencia"];
-				$elem_item["cantidad"] 		= $reg["cantidad"];
-
-				if( $reg["cantidad"] == $item["cantidad"] ){
-					$elem_item["est_contenido"] = 2; 
-				}
+				$coincide = 1;
+				if( $reg["cantidad"] == $item["cantidad"] )
+					$coincide = 2; 
 			}
-
 		}
 
-		return $elem_item;
+		return $coincide;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function estaContenidoEnArchivo( $reg, $items_archivo ){
+	function contenidoEnArchivo( $reg, $items_archivo ){
 		// Devuelve si un item [ref y cantidad] del pedido se encuentra en el archivo leído
 		$coincide = 0;
 
@@ -158,50 +145,47 @@
 		return $coincide;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function obtenerCotejamientoArchivoPedido( $vector_ctj_pedido, $vector_ctj_archivo ){
-		// 
-		$cotejamiento["revision_archivo"] = ""; 
-		$cotejamiento["revision_pedido"] = "";
-
-		foreach ( $vector_ctj_pedido as $item )
-			$cotejamiento["revision_pedido"] 	.= filaCotejamientoPedido( $item  );
-		foreach ( $vector_ctj_archivo as $item )
-			$cotejamiento["revision_archivo"] 	.= filaCotejamientoArchivo( $item );
-
-		return $cotejamiento;
-	}
-	/* ----------------------------------------------------------------------------------- */
 	function realizarCotejamientoArchivoPedido( $items_archivo, $items_registro ){
 		// Verifica si los ítems leídos por archivo coinciden con los ítems de registro del pedido
 
-		$vector_ctj_archivo 	= array();
-		$vector_ctj_pedido 		= array();
+		$coincide_total 		= true;
+		
+		$cotejamiento_archivo 	= "";
 
 		// Recorrido por cada item del archivo se coteja con el pedido
 		foreach ( $items_archivo as $item ){
-			$item_contenido 			= estaContenidoEnRegistroPedido( $item, $items_registro );
-			$item["est_contenido"]		= $item_contenido["est_contenido"];
-			$vector_ctj_pedido[]		= $item_contenido;
-			$vector_ctj_archivo[]		= $item;		
+			$contenido 					= contenidoEnRegistroPedido( $item, $items_registro );
+			$cotejamiento_archivo 		.= filaCotejamientoArchivo( $item, $contenido );
+			if( $contenido != 2 ) 		
+				$coincide_total = false;
 		}
 
-		$vector_ctj_pedido 		= cotejarPedidoConArchivo( $items_archivo, $items_registro, $vector_ctj_pedido );
+		$cotejamiento_pedido 			= chequearItemsArchivo( $items_archivo, $items_registro );
 
-		return obtenerCotejamientoArchivoPedido( $vector_ctj_pedido, $vector_ctj_archivo );
+		$chequeo["estatus_arch"] 		= $coincide_total;
+		$chequeo["revision_archivo"] 	= $cotejamiento_archivo;
+		$chequeo["estatus_pedi"] 		= $cotejamiento_pedido["contenido"];
+		$chequeo["revision_pedido"] 	= $cotejamiento_pedido["cotejamiento"];
+
+		return $chequeo;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function cotejarPedidoConArchivo( $items_archivo, $items_registro, $vector_ctj_pedido ){
+	function chequearItemsArchivo( $items_archivo, $items_registro ){
 		// Verifica si los ítems del pedido están contenidos en el archivo leído
 
+		$contenido = true;
+		$cotejamiento_pedido = "";
+
 		foreach ( $items_registro as $reg ){
-			$coincidencia 				= estaContenidoEnArchivo( $reg, $items_archivo );
-			if( $coincidencia == 0 ){
-				$reg["est_contenido"]	= -1;
-				$vector_ctj_pedido[] 	= $reg;
-			}
+			$coincidencia 				= contenidoEnArchivo( $reg, $items_archivo );
+			if( $coincidencia == 0 ) 	$contenido = false;
+			$cotejamiento_pedido		.= filaCotejamientoPedido( $reg, $coincidencia );
 		}
 
-		return $vector_ctj_pedido;
+		$chequeo["cotejamiento"] 		= $cotejamiento_pedido;
+		$chequeo["contenido"] 			= $contenido;
+
+		return $chequeo;
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function guardarArchivo( $file ){
@@ -217,19 +201,6 @@
         return $uploadedFile;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function extensionValida( $archivo ){
-		// Chequea la extensión válida del archivo
-		$valido = true;
-		
-		$arch_estr = ( explode( ".", $archivo ) );
-		$extension = end( $arch_estr );
-		
-		if( $extension != "xlsx" ) 
-			$valido = false;
-
-		return $valido;
-	}
-	/* ----------------------------------------------------------------------------------- */
 	//Carga de archivo excel para cotejar con pedido
 	ini_set( 'display_errors', 1 );
 
@@ -238,24 +209,28 @@
 		include( "../../bd.php" );
 
 		if( isset( $_FILES['file'] ) ){
+			$archivo 		= guardarArchivo( $_FILES['file'] );
+			$items_archivo 	= leerArchivo( $archivo, "" );
+			$items_registro = obtenerDetallePedidoPorId( $dbh, $_POST["idp"] );
+			$cotejamiento 	= realizarCotejamientoArchivoPedido( $items_archivo["items"], $items_registro );
+			$rsp["ctj_arc"] = $cotejamiento["revision_archivo"];
+			$rsp["ctj_ped"] = $cotejamiento["revision_pedido"];
 
-			if( extensionValida( $_FILES['file']['name'] ) ){
-				$archivo 		= guardarArchivo( $_FILES['file'] );
-				$items_archivo 	= leerArchivo( $archivo, "" );
-				$items_registro = obtenerDetallePedidoPorId( $dbh, $_POST["idp"] );
-				$cotejamiento 	= realizarCotejamientoArchivoPedido( $items_archivo["items"], $items_registro );
-				$rsp["ctj_arc"] = $cotejamiento["revision_archivo"];
-				$rsp["ctj_ped"] = $cotejamiento["revision_pedido"];
-				$rsp["exito"] 	= 1;
-				$rsp["imp"] 	= "Archivo leído";
+			if( $cotejamiento["estatus_arch"] == true && $cotejamiento["estatus_pedi"] == true ){
+				$rsp["exito"] = 1;
+				$rsp["imp"] = "<span class='ctj_ok'>Archivo coincide con pedido</span>";
 			}else{
-				$rsp["exito"] 	= -2;
-				$rsp["imp"] 	= "Error en lectura de archivo";
+				if( $cotejamiento["estatus_pedi"] != true ){
+					$rsp["exito"] = -2;
+					$rsp["imp"] = "<span class='ctjerr'>Algunos ítems del pedido no están en el archivo</span>";
+				}else{
+					$rsp["exito"] = 3;
+					$rsp["imp"] = "<span class='ctj_ok'>El archivo posee cantidades diferentes al pedido</span>";
+				}
 			}
-
 		} else {
 			$rsp["exito"] = -1;
-			$rsp["imp"] = "No se indicó archivo";
+			$rsp["imp"] = "Error en carga de archivo";
 		}
 		
 		echo json_encode( $rsp );

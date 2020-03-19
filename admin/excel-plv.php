@@ -4,7 +4,7 @@
 //header('Content-Type: text/csv; charset=iso-8859-1');
 
 header('Content-Type: text/csv; charset=utf-8');
-header('Content-Disposition: attachment; filename=testers.csv');
+header('Content-Disposition: attachment; filename=plv.csv');
 
 // create a file pointer connected to the output stream
 $output = fopen('php://output', 'w');
@@ -33,7 +33,7 @@ while($row=mysqli_fetch_assoc($Rs)){
 	$nrocliente = $row['NroCliente']; 
 	$pedido = $row['idPedido'];
 
-	$sql="SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $pedido and d.idItem = i.idItem and (i.Familia = 1 or i.Familia = 2 or i.Familia = 3) ";
+	$sql="SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $pedido and d.idItem = i.idItem and i.Familia = 4 ";
 	//echo $sql;
 	$Rs2 = mysqli_query ($dbh, $sql);
 	$rows2 = mysqli_num_rows($Rs2);

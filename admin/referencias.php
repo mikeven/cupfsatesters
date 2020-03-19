@@ -33,14 +33,14 @@ include( 'fn/fn-referencias.php' );
 <br>
 <center>
 <div style="font-size:24px; margin-top:70px">REFERENCIAS</div>
-<div style="font-size:18px;"><?php echo $_SESSION["items"] ?></div>
+<div style="font-size:18px;"><?php echo $_SESSION["Admin"]["Listado"] ?></div>
 <br>
 
 <div id="Listado">
 
 <?php 
 	while( $f = mysqli_fetch_assoc( $familias ) ){ 
-		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"], $_SESSION["items"] );
+		$items_familia = obtenerItemsFamilia( $dbh, $f["idFamilia"], $_SESSION["Admin"]["Listado"] );
 ?>
 	
 	<div id="tit<?php echo $f["Nombre"]?>" class="product-details__title" onclick="toggle('<?php echo $f["Nombre"]?>')">

@@ -30,8 +30,8 @@ function cargarPedido( frm ){
     var file_data = $('#archivo').prop('files')[0];
     var idpedido = $("#id_pedido").val();
     var form_data = new FormData();                  
-    form_data.append('file', file_data );
-    form_data.append('idp', idpedido);
+    form_data.append( 'file', file_data );
+    form_data.append( 'idp', idpedido );
     
     $.ajax({
         url: "data/data-pedido.php",
@@ -50,15 +50,15 @@ function cargarPedido( frm ){
             res = jQuery.parseJSON( data );
 
             $(".tabla_ctj").fadeIn();
-            
-            $("#leyenda_check_pedido").fadeIn();
-            $("#response-pedido").attr( "align", "center" );
             $("#response-pedido").html( res.imp );
-            $("#pedido_cotejado").html( res.ctj_arc );
-            $("#registro_pedido").html( res.ctj_ped );
 
             if( res.exito == 1 ){
-                $("#cnf_pedido_archivo").fadeIn();
+                $("#leyenda_check_pedido").fadeIn();
+                $("#response-pedido").attr( "align", "center" );
+                
+                $("#pedido_cotejado").html( res.ctj_arc );
+                $("#registro_pedido").html( res.ctj_ped );
+                //$("#cnf_pedido_archivo").fadeIn();
                 $("#vrepte").attr( "href", res.lnk_r );
                 $(".post_carga_r").fadeIn(200);
             }

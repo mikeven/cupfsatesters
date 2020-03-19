@@ -28,12 +28,13 @@
 <link rel="stylesheet" type="text/css" href="../css1.css"/>
 <script src="js/fn-pedido.js"></script>
 <style type="text/css">
-	.ctj_ok{ color: #147202; } .ctjerr{ color: #cf423b; } .inf_ok{ color: #ccc; } .ctjwrn{ color: #ef9241; }
+	.ctj_ok{ color: #147202; } .ctjerr{ color: #cf423b; } .inf_ok{ color: #216cb9; } .ctjwrn{ color: #ef9241; }
 	.tabla_ctj{ display: none; }
 	#tabla_matriz td{ vertical-align: top; }
 	#leyenda_check_pedido li, .tx_confirmacion{ list-style: none; font-size: 12px; text-align: left }
 	#cnf_pedido_archivo, #leyenda_check_pedido{ display: none; } .sec_confirmacion{ padding: 8px 0;  }
 	#response-pedido{ padding: 30px 0 0px 0; }
+	.icoleg{ margin-right: 2px; } .ileg{ margin-right: 9px; }
 
 	<?php if( $pedido["Estatus"] == 1 ) { ?>
 		.visible_estatus{ display: none; }
@@ -70,7 +71,7 @@
 
 			<div class="product-details__title"> </div>
 
-			<table style="width: 50%;" id="tabla_matriz">
+			<table style="width: 55%;" id="tabla_matriz">
 				<tr>
 					<td>
 						<table id="tabla_cotejo_pedido" align="center" class="testertable tabla_ctj_">
@@ -130,10 +131,10 @@
 					<td colspan="2">
 						<div class="">
 							<ul id="leyenda_check_pedido">
-								<li><i class="fa fa-check ctj_ok"></i> Coincide en referencia y cantidad</li>
-								<li><i class="fa fa-exclamation ctjwrn"></i> Referencia con cantidades diferentes</li>
-								<li><i class="fa fa-times ctjerr"></i> Pertenece a pedido, no se encuentra en archivo</li>
-								<li><i class="fa fa-times inf_ok"></i> Leído en archivo, no pertenece al pedido</li>
+								<li><i class="fa fa-check ctj_ok icoleg"></i> Coincide en referencia y cantidad</li>
+								<li><i class="fa fa-exclamation ctjwrn ileg"></i> Cantidades diferentes: se actualiza cantidad en pedido</li>
+								<li><i class="fa fa-plus inf_ok icoleg"></i> Leído en archivo, no está pedido: se agrega al pedido</li>
+								<li><i class="fa fa-minus ctjerr icoleg"></i> No está en archivo, cantidad en pedido pasa a cero (0)</li>
 							</ul>
 						</div>
 					</td>

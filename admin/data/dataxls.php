@@ -11,16 +11,14 @@ function leerArchivo( $archivo, $narchivo ){
 	//PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 	$objReader = new PHPExcel_Reader_Excel2007();
 	$carga = 0; $archivo_cargado = false;
-	$imp = "";
+	$items = array();
 	$linea = 2;				// Línea inicial de lectura
 	
 	if( file_exists ( $archivo ) ){
 		$objPHPExcel = $objReader->load( $archivo );
-		//$ntabs = $objPHPExcel->getSheetCount();
 		$archivo_cargado = true;
 	}else 
 		$carga = -3;
-	$items = array();
 
 	if( ( $archivo_cargado ) ){
 

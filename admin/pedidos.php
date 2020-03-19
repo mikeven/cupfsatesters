@@ -12,38 +12,43 @@ function semanas( $inicio, $fin ) {
 	global $dbh;
 	global $dias;
 	global $meses;
+	$id_admin 		= $_SESSION["Admin"]["idAdmin"];
 	
-	$inicio2 = strtolower( date( 'd', $inicio )." ".$meses[date( 'n', $inicio ) - 1]." ".date( 'Y', $inicio ) );
-	$fin2 = strtolower( date( 'd', $fin )." ".$meses[date( 'n', $fin ) - 1]." ".date( 'Y', $fin ) );
+	$inicio2 		= strtolower( date( 'd', $inicio )." ".$meses[date( 'n', $inicio ) - 1]." ".date( 'Y', $inicio ) );
+	$fin2 			= strtolower( date( 'd', $fin )." ".$meses[date( 'n', $fin ) - 1]." ".date( 'Y', $fin ) );
 	
-	$FirstDay = date("Y-m-d", $inicio) . " 00:00:00";  
-	$LastDay = date("Y-m-d", $fin) . " 00:00:00";  
+	$FirstDay 		= date( "Y-m-d", $inicio ) . " 00:00:00";  
+	$LastDay 		= date( "Y-m-d", $fin ) . " 00:00:00";  
 	
 	//cantidad de pedidos
-	$sql = "SELECT * FROM Pedido as p where p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')";
+	$sql = "SELECT * FROM Pedido as p where p.Confirmado = 1 and ( p.Fecha BETWEEN '$FirstDay' AND '$LastDay' ) 
+	and p.idColaborador in ( select idColaborador from Admin_Colab where idAdmin = $id_admin )";
 	//echo $sql;
-	$Rs2 = mysqli_query ($dbh, $sql);
-	$rows2 = mysqli_num_rows($Rs2);
+	$Rs2 			= mysqli_query ( $dbh, $sql );
+	$rows2 			= mysqli_num_rows( $Rs2 );
 	
-
 	echo "<div><div class='product-details__title'>$inicio2 - $fin2 ($rows2)</div>";
 
-	$cont = 0;
-	$sql = "SELECT * FROM Pedido as p, Colaborador as c where c.idColaborador = p.idColaborador and p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')";
-	//echo $sql;
-	$Rs = mysqli_query ($dbh, $sql);
-	$rows = mysqli_num_rows($Rs);
-	while($row=mysqli_fetch_assoc($Rs)){
-		$idcliente = $row['idColaborador'];
-		$nombre = $row['Nombre']; 
-		$pedido = $row['idPedido'];
+	$cont 	= 0;
+	$sql 	= "SELECT * FROM Pedido as p, Colaborador as c 
+				where c.idColaborador = p.idColaborador and p.Confirmado = 1 and ( p.Fecha BETWEEN '$FirstDay' AND '$LastDay' ) 
+				and p.idColaborador in ( select idColaborador from Admin_Colab where idAdmin = $id_admin )";
+	
+	$Rs 			= mysqli_query ( $dbh, $sql );
+	$rows 			= mysqli_num_rows( $Rs );
+
+	while( $row = mysqli_fetch_assoc( $Rs ) ){
+
+		$idcliente 	= $row['idColaborador'];
+		$nombre 	= $row['Nombre']; 
+		$pedido 	= $row['idPedido'];
 		
 	//Saco la cantidad de unidades de su pedido
 		$sum = 0; //unidades pedidas en su pedido
 		$sql = "SELECT SUM(Cantidad1) AS TotAcum FROM PedidoDetalle where idPedido=$pedido"; 
-		$Rs2 = mysqli_query ($dbh, $sql);
-		$row2 = mysqli_fetch_assoc($Rs2); 
-		if ($row2['TotAcum'] > 0)
+		$Rs2 = mysqli_query ( $dbh, $sql );
+		$row2 = mysqli_fetch_assoc( $Rs2 ); 
+		if ( $row2['TotAcum'] > 0 )
 			$sum = $row2['TotAcum'];	
 	//Listo
 	?>
@@ -51,14 +56,13 @@ function semanas( $inicio, $fin ) {
 	<div class="product-details__title" onclick="toggle(<?php echo $idcliente ?>)">
 		<?php echo $nombre ?> (<?php echo $sum ?>)</div>
 
-
 		<?php
 		$sql = "SELECT * FROM PedidoDetalle as d, Item as i where d.idPedido = $pedido and d.idItem = i.idItem";  
 		//echo $sql;
-		$Rs2 = mysqli_query ($dbh, $sql);
-		$rows2 = mysqli_num_rows($Rs2);
+		$Rs2 		= mysqli_query ( $dbh, $sql );
+		$rows2 		= mysqli_num_rows( $Rs2 );
 		
-		if ($rows2 > 0) { //Tiene pedido
+		if ( $rows2 > 0 ) { //Tiene pedido
 			$cont += 1;
 		?>
 			<div id="<?php echo $idcliente ?>" class="listadoPedido" style="display:none">

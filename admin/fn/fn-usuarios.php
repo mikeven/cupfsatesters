@@ -5,9 +5,10 @@
 	/* ----------------------------------------------------------- */
 
 	/* ----------------------------------------------------------- */
-	function obtenerColaboradores( $dbh ){
+	function obtenerColaboradores( $dbh, $id_admin ){
 		// Devuelve los registros de usuarios
-		$sql = "SELECT * FROM Colaborador"; 
+		$sql = "SELECT * FROM Colaborador where idColaborador in 
+		( select idColaborador from Admin_Colab where idAdmin = $id_admin )"; 
 		$Rs = mysqli_query( $dbh, $sql );
 
 		return $Rs;
@@ -32,5 +33,5 @@
 		return file_exists( $archivo );
 	}
 	/* ----------------------------------------------------------- */
-	$usuarios = obtenerColaboradores( $dbh );
+	$usuarios = obtenerColaboradores( $dbh, $_SESSION["Admin"]["idAdmin"] );
 ?>
