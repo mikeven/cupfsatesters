@@ -42,6 +42,7 @@ function cargarPedido( frm ){
             $("#response-pedido").attr( "align", "center" );
             $("#response-pedido").html( wait ); 
             $("#bot_frm_pedido").fadeOut(200);
+            $("#frm-pedido").fadeOut(200);
             $(".sec_confirmacion").fadeOut();
         },
         success: function( data ) {
@@ -50,15 +51,19 @@ function cargarPedido( frm ){
             res = jQuery.parseJSON( data );
 
             $(".tabla_ctj").fadeIn();
+            $("#bot_recargar").fadeIn();
             $("#response-pedido").html( res.imp );
+            $("#nro_cliente_archivo").html( res.ncl_arc );
+            $("#nro_cliente_pedido").html( res.ncl_ped );
 
             if( res.exito == 1 ){
                 $("#leyenda_check_pedido").fadeIn();
                 $("#response-pedido").attr( "align", "center" );
+                $(".visible_estatus")
                 
                 $("#pedido_cotejado").html( res.ctj_arc );
                 $("#registro_pedido").html( res.ctj_ped );
-                //$("#cnf_pedido_archivo").fadeIn();
+                $("#cnf_pedido_archivo").fadeIn();
                 $("#vrepte").attr( "href", res.lnk_r );
                 $(".post_carga_r").fadeIn(200);
             }

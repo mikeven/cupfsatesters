@@ -10,7 +10,7 @@ function leerArchivo( $archivo, $narchivo ){
 	require_once( "PHPExcel/Reader/Excel2007.php" );
 	//PHPExcel_Settings::setZipClass(PHPExcel_Settings::PCLZIP);
 	$objReader = new PHPExcel_Reader_Excel2007();
-	$carga = 0; $archivo_cargado = false;
+	$carga = 0; $archivo_cargado = false; $num_cliente_const = true;
 	$items = array();
 	$linea = 2;				// Línea inicial de lectura
 	
@@ -22,7 +22,7 @@ function leerArchivo( $archivo, $narchivo ){
 
 	if( ( $archivo_cargado ) ){
 
-		$valor = $objPHPExcel->getActiveSheet()->getCell( "A".$linea )->getValue();
+		$valor = $ncliente = $objPHPExcel->getActiveSheet()->getCell( "A".$linea )->getValue();
 		while( $valor != "" ){
 			$reg["referencia"] 	= $objPHPExcel->getActiveSheet()->getCell( "B".$linea )->getValue();
 			$reg["cantidad"] 	= $objPHPExcel->getActiveSheet()->getCell( "C".$linea )->getValue();
@@ -30,12 +30,17 @@ function leerArchivo( $archivo, $narchivo ){
 
 			$linea++;
 			$valor = $objPHPExcel->getActiveSheet()->getCell( "A".$linea )->getValue();
+			if( $valor != "" ){
+				if( $valor != $ncliente ) $num_cliente_const = false;
+			}
 		}
 		
 		$carga = 1;
 	}
-	$resultado["exito"] = $carga;
-	$resultado["items"] = $items;
+	$resultado["exito"] 	= $carga;
+	$resultado["cliente"] 	= $ncliente;
+	$resultado["nc_const"] 	= $num_cliente_const;
+	$resultado["items"] 	= $items;
 
 	return $resultado;
 }

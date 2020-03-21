@@ -4,6 +4,16 @@
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------------------------------- */
+	function obtenerDataPedidoPorId( $dbh, $id ){
+		// Devuelve el registro de pedido dado su id
+
+		$sql = "SELECT p.idPedido, c.idColaborador, date_format( p.Fecha, '%d/%m/%Y') as Fecha, 
+		c.Nombre, c.Usuario, c.Email, c.NroCliente, c.Listado, p.Confirmado, p.Estatus FROM Pedido p, Colaborador c 
+		where c.idColaborador = p.idColaborador and p.idPedido = $id";
+
+		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
+	}
+	/* ----------------------------------------------------------------------------------- */
 	function obtenerDetallePedidoPorId( $dbh, $idp ){
 		// Devuelve los registros de detalle de pedido dado su id
 		$q = "select i.Referencia1 as referencia, d.Cantidad1 as cantidad
@@ -24,9 +34,9 @@
 		return $lista_c;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function obtenerIdItemPorReferencia( $dbh, $ref ){
+	function obtenerIdItemPorReferencia( $dbh, $ref, $listado ){
 		// Devuelve el id de un ítem dado su referencia
-		$sql = "SELECT idItem from Item where Referencia1 = '$ref'";
+		$sql = "SELECT idItem from Item where Referencia1 = '$ref' and Listado = '$listado'";
 		return mysqli_fetch_assoc( mysqli_query( $dbh, $sql ) );
 	}
 	/* ----------------------------------------------------------------------------------- */
@@ -37,6 +47,16 @@
 		return mysqli_query( $dbh, $q );
 	}
 	/* ----------------------------------------------------------------------------------- */
+	function ingresarItemsPedido( $dbh, $idpedido, $id_item, $cant ){
+		// Registra nuevos ítems a detalle de pedido existente
+		$q = "INSERT INTO PedidoDetalle values ( NULL, $idpedido, $id_item, $cant, NOW() )";   
+		
+		$Rs = mysqli_query ( $dbh, $q );
+		$afe = mysqli_affected_rows( $dbh );
+		
+		return $afe;
+	}
+	/* ----------------------------------------------------------------------------------- */
 	function actualizarItemPedido( $dbh, $idpedido, $id_item, $cant ){
 		// Actualiza en bd la cantidad de un ítem dado id de pedido y referencia de ítem
 		$q = "update PedidoDetalle set Cantidad1 = $cant where idItem = $id_item";
@@ -44,17 +64,26 @@
 		return mysqli_query( $dbh, $q );
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function procesarActualizacionPedido( $dbh, $pedido ){
+	function procesarActualizacionPedido( $dbh, $pedido, $listado ){
 		// Procesa los ítems modificados desde archivo para actualizar pedido registrado
 
 		$idpedido 			= $pedido["idpedido_actarchivo"];
-		$items 				= $pedido["items"];
+		$items 				= array_merge( $pedido["items"], $pedido["ritems"] );
+		$nitems 			= $pedido["nitems"];
 		$actualizaciones 	= 0;
 
+		// Actualización de cantidades
 		foreach ( $items as $it ) {
 			list( $ref, $cant ) = explode( '-', $it );
-			$data_item = obtenerIdItemPorReferencia( $dbh, $ref );
+			$data_item = obtenerIdItemPorReferencia( $dbh, $ref, $listado );
 			$actualizaciones += actualizarItemPedido( $dbh, $idpedido, $data_item["idItem"], $cant );
+		}
+
+		// Registro de nuevos ítems
+		foreach ( $nitems as $it ) {
+			list( $ref, $cant ) = explode( '-', $it );
+			$data_item = obtenerIdItemPorReferencia( $dbh, $ref, $listado );
+			$actualizaciones += ingresarItemsPedido( $dbh, $idpedido, $data_item["idItem"], $cant );
 		}
 		
 		return $actualizaciones;
@@ -93,8 +122,8 @@
 
 		$ref 	= $item["referencia"];
 		$cant 	= $item["cantidad"];
-		$icono 	= iconoCotejamientoArchivo( $item["est_contenido"] );
 		$campo 	= "";
+		$icono 	= iconoCotejamientoArchivo( $item["est_contenido"] );
 		
 		if( $item["est_contenido"] == 1 ) // Coincide referencia, cambia la cantidad: Actualización de cantidad
 			$campo 	= "<input type='hidden' name='items[]' value='$ref-$cant'>";
@@ -111,9 +140,13 @@
 
 		$ref 	= $item["referencia"];
 		$cant 	= $item["cantidad"];
+		$campo 	= "";
 		$icono 	= iconoCotejamientoPedido( $item["est_contenido"] );
 
-		$fila = "<tr><td>$ref</td><td>$cant</td><td>$icono</td>";
+		if( $item["est_contenido"] == -1 ) // Item en pedido, no presente en archivo: se cancela la cantidad
+			$campo 	= "<input type='hidden' name='ritems[]' value='$ref-0'>";
+
+		$fila = "<tr><td>$ref $campo</td><td>$cant</td><td>$icono</td>";
 
 		return $fila;
 	}
@@ -158,8 +191,15 @@
 		return $coincide;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function obtenerCotejamientoArchivoPedido( $vector_ctj_pedido, $vector_ctj_archivo ){
-		// 
+	function cotejarClienteArchivoPedido( $pedido, $ncliente ){
+		// Verifica que el cliente leído por archivo coincida con el registrado en pedido
+		
+		return ( $pedido["NroCliente"] == $ncliente );
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function obtenerCotejamientoArchivoPedido( $vector_ctj_pedido, $vector_ctj_archivo, $pedido, $ncliente ){
+		// Devuelve el resultado del cotejamiento del archivo con el registro del pedido
+
 		$cotejamiento["revision_archivo"] = ""; 
 		$cotejamiento["revision_pedido"] = "";
 
@@ -168,14 +208,17 @@
 		foreach ( $vector_ctj_archivo as $item )
 			$cotejamiento["revision_archivo"] 	.= filaCotejamientoArchivo( $item );
 
+		$cotejamiento["revision_cliente"] = cotejarClienteArchivoPedido( $pedido, $ncliente );
+
 		return $cotejamiento;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function realizarCotejamientoArchivoPedido( $items_archivo, $items_registro ){
+	function realizarCotejamientoArchivoPedido( $data_archivo, $items_registro, $pedido ){
 		// Verifica si los ítems leídos por archivo coinciden con los ítems de registro del pedido
 
 		$vector_ctj_archivo 	= array();
 		$vector_ctj_pedido 		= array();
+		$items_archivo 			= $data_archivo["items"];
 
 		// Recorrido por cada item del archivo se coteja con el pedido
 		foreach ( $items_archivo as $item ){
@@ -187,7 +230,7 @@
 
 		$vector_ctj_pedido 		= cotejarPedidoConArchivo( $items_archivo, $items_registro, $vector_ctj_pedido );
 
-		return obtenerCotejamientoArchivoPedido( $vector_ctj_pedido, $vector_ctj_archivo );
+		return obtenerCotejamientoArchivoPedido( $vector_ctj_pedido, $vector_ctj_archivo, $pedido, $data_archivo["cliente"] );
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function cotejarPedidoConArchivo( $items_archivo, $items_registro, $vector_ctj_pedido ){
@@ -236,20 +279,33 @@
 	if( isset ( $_POST["idp"] ) ){
 		include( "dataxls.php" );
 		include( "../../bd.php" );
+		$pedido = obtenerDataPedidoPorId( $dbh, $_POST["idp"] );
 
 		if( isset( $_FILES['file'] ) ){
 
 			if( extensionValida( $_FILES['file']['name'] ) ){
+				
 				$archivo 		= guardarArchivo( $_FILES['file'] );
-				$items_archivo 	= leerArchivo( $archivo, "" );
+				$data_archivo 	= leerArchivo( $archivo, "" );
 				$items_registro = obtenerDetallePedidoPorId( $dbh, $_POST["idp"] );
-				$cotejamiento 	= realizarCotejamientoArchivoPedido( $items_archivo["items"], $items_registro );
+				$cotejamiento 	= realizarCotejamientoArchivoPedido( $data_archivo, $items_registro, $pedido );
+				
 				$rsp["ctj_arc"] = $cotejamiento["revision_archivo"];
-				$rsp["ctj_ped"] = $cotejamiento["revision_pedido"];
-				$rsp["exito"] 	= 1;
-				$rsp["imp"] 	= "Archivo leído";
+				$rsp["ctj_ped"] = $cotejamiento["revision_pedido"];	
+				$rsp["ncl_arc"] = "Cliente #".$data_archivo["cliente"];
+				$rsp["ncl_ped"] = "Cliente #".$pedido["NroCliente"];
+				$rsp["nc_cnst"] = $data_archivo["nc_const"];
+
+				if( $cotejamiento["revision_cliente"] == true && $rsp["nc_cnst"] == true ){
+					$rsp["exito"] 	= 1;
+					$rsp["imp"] 	= "Archivo leído";
+				}else{
+					$rsp["exito"] 	= -2;
+					$rsp["imp"] 	= "El número de cliente es incorrecto o no coincide con pedido";
+				}
+
 			}else{
-				$rsp["exito"] 	= -2;
+				$rsp["exito"] 	= -3;
 				$rsp["imp"] 	= "Error en lectura de archivo";
 			}
 
@@ -279,10 +335,14 @@
 	/* ----------------------------------------------------------------------------------- */
 	if( isset( $_POST["pedido_archivo"] ) ){
 		include( "../../bd.php" );
+		include( "../fn/fn-usuarios.php" );
 	
 		parse_str( $_POST["pedido_archivo"], $pedido );
-		if( isset($pedido["items"] ) ){
-			$regs_act = procesarActualizacionPedido( $dbh, $pedido );
+		$data_pedido = obtenerDataPedidoPorId( $dbh, $pedido["idpedido_actarchivo"] );
+		$listado = $data_pedido["Listado"];
+		
+		if( isset( $pedido["items"] ) || isset( $pedido["nitems"] ) || isset( $pedido["ritems"] ) ){
+			$regs_act = procesarActualizacionPedido( $dbh, $pedido, $listado );
 			if( $regs_act > 0 ){
 				actualizarEstatusPedido( $dbh, $pedido["idpedido_actarchivo"], 1 );
 				$rsp["exito"] = 1;
