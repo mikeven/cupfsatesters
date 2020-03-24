@@ -68,8 +68,17 @@
 		// Procesa los ítems modificados desde archivo para actualizar pedido registrado
 
 		$idpedido 			= $pedido["idpedido_actarchivo"];
-		$items 				= array_merge( $pedido["items"], $pedido["ritems"] );
-		$nitems 			= $pedido["nitems"];
+		
+		if( !isset( $pedido["ritems"] ) ) 
+			$pedido["ritems"] = array();	// No hay items para eliminar (cantidades en cero): 
+		if( isset( $pedido["ritems"] ) ) 
+			$nitems 			= $pedido["nitems"];
+		else
+			$nitems 			= array();
+
+		$items 				= array_merge( $pedido["items"], $pedido["ritems"] ); 
+		// items con cantidades a modificar: items (cantidades diferentes al pedido) ritems: cantidades que pasan a cero
+
 		$actualizaciones 	= 0;
 
 		// Actualización de cantidades
@@ -335,7 +344,6 @@
 	/* ----------------------------------------------------------------------------------- */
 	if( isset( $_POST["pedido_archivo"] ) ){
 		include( "../../bd.php" );
-		include( "../fn/fn-usuarios.php" );
 	
 		parse_str( $_POST["pedido_archivo"], $pedido );
 		$data_pedido = obtenerDataPedidoPorId( $dbh, $pedido["idpedido_actarchivo"] );

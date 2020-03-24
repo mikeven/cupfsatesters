@@ -88,6 +88,7 @@
 		global $dbh;
 		global $dias;
 		global $meses;
+		$id_admin = $_SESSION["Admin"]["idAdmin"];
 		
 		$inicio2 = strtolower( date( 'd', $inicio )." ".$meses[date( 'n', $inicio ) - 1]." ".date( 'Y', $inicio ) );
 		$fin2 = strtolower( date( 'd', $fin )." ".$meses[date( 'n', $fin ) - 1]." ".date( 'Y', $fin ) );
@@ -96,7 +97,9 @@
 		$LastDay = date("Y-m-d", $fin) . " 00:00:00";  
 		
 		//cantidad de pedidos
-		$sql = "SELECT * FROM Pedido as p where p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')";
+		$sql = "SELECT * FROM Pedido as p where p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay') and p.idColaborador in 
+		( select idColaborador from Admin_Colab where idAdmin = $id_admin )";
+
 		//echo $sql;
 		$Rs2 = mysqli_query ($dbh, $sql);
 		$rows2 = mysqli_num_rows($Rs2);
@@ -105,7 +108,8 @@
 		echo "<div><div class='product-details__title'>$inicio2 - $fin2 ($rows2) </div>";
 
 		$cont = 0;
-		$sql = "SELECT * FROM Pedido as p, Colaborador as c where c.idColaborador = p.idColaborador and p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay')";
+		$sql = "SELECT * FROM Pedido as p, Colaborador as c where c.idColaborador = p.idColaborador and p.Confirmado=1 and (p.Fecha BETWEEN '$FirstDay' AND '$LastDay') 
+		and c.idColaborador in ( select idColaborador from Admin_Colab where idAdmin = $id_admin )";
 		//echo $sql;
 		$Rs = mysqli_query ( $dbh, $sql );
 		$rows = mysqli_num_rows( $Rs );
