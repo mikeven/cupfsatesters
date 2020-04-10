@@ -17,9 +17,9 @@
 						</select>
 						<select id="mtv<?php echo $item['idItem']?>" name="motivo" class="ajuste_existencias_inv selmtv" 
 							data-lista="ct<?php echo $item['idItem']?>">
-							<?php foreach( $motivos as $m ) { if( $m['idMotivo'] != 6 ) { ?>
+							<?php foreach( $motivos as $m ) { ?>
 								<option value="<?php echo $m['idMotivo']?>"><?php echo $m['nombre']?></option>
-							<?php } } ?>
+							<?php } ?>
 						</select>
 						
 						<select id="ct<?php echo $item['idItem']?>" name="traspaso" class="ajuste_existencias_inv selcol">

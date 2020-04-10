@@ -16,7 +16,7 @@
 	/* ----------------------------------------------------------------------------------- */
 	function obtenerDetallePedidoPorId( $dbh, $idp ){
 		// Devuelve los registros de detalle de pedido dado su id
-		$q = "select i.Referencia1 as referencia, d.Cantidad1 as cantidad
+		$q = "select i.idItem, i.Referencia1 as referencia, d.Cantidad1 as cantidad
 				from PedidoDetalle d, Item i where d.idItem = i.idItem and d.idPedido = $idp";
 		$Rs = mysqli_query ( $dbh, $q );
 		
@@ -62,6 +62,35 @@
 		$q = "update PedidoDetalle set Cantidad1 = $cant where idItem = $id_item";
 		
 		return mysqli_query( $dbh, $q );
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function actualizarInventarioPorPedidoConfirmado( $dbh, $pedido, $detalle_pedido ){
+		// Registra en inventario las entradas de ítems de acuerdo al pedido confirmado
+		include( "data-inventario.php" );
+		$det_inv 			= "Carga por pedido"; 
+
+		foreach( $detalle_pedido as $item ){
+			
+			registrarEntradaInventario( $dbh, $item["idItem"], $item["cantidad"], $pedido["idColaborador"], $det_inv, 6 );
+		}
+	}
+	/* ----------------------------------------------------------------------------------- */
+	function actualizarInventarioPorPedidoArchivo( $dbh, $pedido, $idcolaborador, $listado ){
+		// Registra en inventario las entradas de ítems de acuerdo al pedido confirmado
+		include( "data-inventario.php" );
+
+		$detalle 			= "Carga por pedido";
+		$items 				= array_merge( $pedido["items"], $pedido["nitems"], $pedido["pitems"] );
+							// Ítems que pasan a formar parte del inventario: 
+							// items:  ítems que modificaron su cantidad. 
+							// nitems: ítems agregados desde archivo que no estaban en el pedido.
+							// pitems: ítems presentes en el pedido. 
+
+		foreach( $items as $i ){
+			list( $ref, $cantidad ) = explode( '-', $i );
+			$data_item = obtenerIdItemPorReferencia( $dbh, $ref, $listado );
+			registrarEntradaInventario( $dbh, $data_item["idItem"], $cantidad, $idcolaborador, $detalle, 6 );
+		}
 	}
 	/* ----------------------------------------------------------------------------------- */
 	function procesarActualizacionPedido( $dbh, $pedido, $listado ){
@@ -131,7 +160,7 @@
 
 		$ref 	= $item["referencia"];
 		$cant 	= $item["cantidad"];
-		$campo 	= "";
+		$campo 	= "<input type='hidden' name='pitems[]' value='$ref-$cant'>";
 		$icono 	= iconoCotejamientoArchivo( $item["est_contenido"] );
 		
 		if( $item["est_contenido"] == 1 ) // Coincide referencia, cambia la cantidad: Actualización de cantidad
@@ -256,7 +285,7 @@
 		return $vector_ctj_pedido;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function guardarArchivo( $file ){
+	function guardarArchivoPedido( $file ){
 		// Guarda el archivo en formato xls en ubicación determinada
 
 		$sourcePath = $file['tmp_name'];
@@ -269,7 +298,7 @@
         return $uploadedFile;
 	}
 	/* ----------------------------------------------------------------------------------- */
-	function extensionValida( $archivo ){
+	function extensionValidaArchivoPedido( $archivo ){
 		// Chequea la extensión válida del archivo
 		$valido = true;
 		
@@ -292,9 +321,9 @@
 
 		if( isset( $_FILES['file'] ) ){
 
-			if( extensionValida( $_FILES['file']['name'] ) ){
+			if( extensionValidaArchivoPedido( $_FILES['file']['name'] ) ){
 				
-				$archivo 		= guardarArchivo( $_FILES['file'] );
+				$archivo 		= guardarArchivoPedido( $_FILES['file'] );
 				$data_archivo 	= leerArchivo( $archivo, "" );
 				$items_registro = obtenerDetallePedidoPorId( $dbh, $_POST["idp"] );
 				$cotejamiento 	= realizarCotejamientoArchivoPedido( $data_archivo, $items_registro, $pedido );
@@ -329,14 +358,23 @@
 	if( isset( $_POST["pedido_confirmado"] ) ){
 		include( "../../bd.php" );
 		
-		$idpedido = $_POST["pedido_confirmado"];
-		$resultado = actualizarEstatusPedido( $dbh, $idpedido, 1 );
+		$idpedido 			= $_POST["pedido_confirmado"];
+		$data_pedido 		= obtenerDataPedidoPorId( $dbh, $idpedido );
+		$detalle_pedido 	= obtenerDetallePedidoPorId( $dbh, $idpedido );
+
+		$resultado 			= actualizarEstatusPedido( $dbh, $idpedido, 1 );
+
 		if( $resultado ){
-			$rsp["exito"] = 1;
-			$rsp["imp"] = "<span class='ctj_ok'>Pedido confirmado con éxito</span>";
-		}else{
-			$rsp["exito"] = -1;
-			$rsp["imp"] = "Error al confirmar pedido";
+
+			actualizarInventarioPorPedidoConfirmado( $dbh, $data_pedido, $detalle_pedido );
+
+			$rsp["exito"] 	= 1;
+			$rsp["imp"] 	= "<span class='ctj_ok'>Pedido confirmado con éxito</span>";
+
+		} else {
+
+			$rsp["exito"] 	= -1;
+			$rsp["imp"] 	= "Error al confirmar pedido";
 		}
 		
 		echo json_encode( $rsp );
@@ -346,22 +384,35 @@
 		include( "../../bd.php" );
 	
 		parse_str( $_POST["pedido_archivo"], $pedido );
-		$data_pedido = obtenerDataPedidoPorId( $dbh, $pedido["idpedido_actarchivo"] );
-		$listado = $data_pedido["Listado"];
+		$data_pedido 	= obtenerDataPedidoPorId( $dbh, $pedido["idpedido_actarchivo"] );
+		$listado 		= $data_pedido["Listado"];
 		
 		if( isset( $pedido["items"] ) || isset( $pedido["nitems"] ) || isset( $pedido["ritems"] ) ){
-			$regs_act = procesarActualizacionPedido( $dbh, $pedido, $listado );
+			$regs_act 	= procesarActualizacionPedido( $dbh, $pedido, $listado );
+			
 			if( $regs_act > 0 ){
+
 				actualizarEstatusPedido( $dbh, $pedido["idpedido_actarchivo"], 1 );
-				$rsp["exito"] = 1;
-				$rsp["imp"] = "<span class='ctj_ok'>Pedido confirmado con éxito</span>";
+				actualizarInventarioPorPedidoArchivo( $dbh, $pedido, $data_pedido["idColaborador"], $listado );
+
+				$rsp["exito"] 	= 1;
+				$rsp["imp"] 	= "<span class='ctj_ok'>Pedido confirmado con éxito</span>";
+
+			} else {
+
+				$rsp["exito"] 	= -1;
+				$rsp["imp"] 	= "<span class='ctj_err'>Error al actualizar pedido</span>";
+
 			}
-		}else{
-			$rsp["exito"] = 0;
-			$rsp["imp"] = "Pedido confirmado sin cambios";
+
+		} else {
+			actualizarEstatusPedido( $dbh, $pedido["idpedido_actarchivo"], 1 );
+			$rsp["exito"] 	= 1;
+			$rsp["imp"] 	= "Pedido confirmado sin cambios";
 		}
 		
 		echo json_encode( $rsp );
+		
 	}
 	/* ----------------------------------------------------------------------------------- */
 ?>

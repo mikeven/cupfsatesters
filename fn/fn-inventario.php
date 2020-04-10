@@ -128,7 +128,7 @@
 	/* ----------------------------------------------------------- */
 	function obtenerMotivosRetiroInventario( $dbh ){
 		// Devuelve la lista de motivos de retiros en los registros de inventario
-		$sql = "SELECT * FROM Motivo"; 
+		$sql = "SELECT * FROM Motivo where opcion_usuario = 1"; 
 		$Rs = mysqli_query( $dbh, $sql );
 
 		return obtenerListaRegistros( $Rs );

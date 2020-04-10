@@ -13,8 +13,9 @@
 	if( !isset( $_GET['idu'] ) ) 
 		header('Location: login.php?s=0');
 	else{
-		$colaboradores = obtenerColaboradores( $dbh );
+		$colaboradores = obtenerColaboradores( $dbh, $_SESSION["Admin"]["idAdmin"] );
 		$usuario = obtenerColaboradorPorId( $dbh, $_GET['idu'] );
+		$idc_actual = $_GET['idu'];
 		$motivos = obtenerMotivosRetiroInventario( $dbh );
 	}
 ?>
@@ -42,6 +43,7 @@
     	padding-right: 4px; 
 	}
 	.innerfila, .target_ajinv{ background: #dcdada !important; }
+	
 </style>
 
 <script>
@@ -62,7 +64,7 @@
 	<div style="font-size:18px;"><?php echo $usuario["Nombre"]." (".$usuario["NroCliente"].")"; ?></div>
 	<br>
 
-	<div id="Listado">
+	<div id="Listado" class="listado_inventario">
 		<input id="idcolaborador" type="hidden" name="id_colaborador" value="<?php echo $_GET['idu'] ?>">
 		<?php 
 			foreach ( $familias as $f ) {
@@ -86,9 +88,9 @@
 							$lnk_mov = "movimiento_item_inventario.php?idc=$usuario[idColaborador]&iditem=$item[idItem]";
 							$inventario_item = obtenerItemsInventario( $dbh,  $item['idItem'], $usuario["idColaborador"] );
 							
-							if( tieneMovimientoInventario( $inventario_item ) ){
-								$cant = totalDisponibleInv( $inventario_item ); $fila++;
-								$top_u = topeUnidadesRestar( $cant );
+							if( tieneMovimientoInventario( $dbh, $item['idItem'], $usuario["idColaborador"] ) ){
+								$cant 	= totalDisponibleInv( $inventario_item ); $fila++;
+								$top_u 	= topeUnidadesRestar( $cant );
 						?>
 							<tr class="<?php filaParImpar( $fila ) ?>">
 								<td> 
@@ -128,7 +130,8 @@
 		?>
 
 	</div> <!--Cierro el listado-->
-	<div class="boton" onclick="javascript:location.href='usuarios.php'" style="margin-top: 50px;">
+
+	<div class="boton" onclick="javascript:location.href='usuarios.php'" style="margin: 50px 0;">
 			<i class="fas fa-arrow-alt-circle-left" title="Volver a usuarios"></i> Volver
 	</div>
 </center>

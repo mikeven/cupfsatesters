@@ -21,10 +21,16 @@
 		return obtenerListaRegistros( $Rs );
 	}
 	/* ----------------------------------------------------------- */
-	function tieneMovimientoInventario( $reg_item_inv ){
+	function tieneMovimientoInventario( $dbh, $id_item, $idColaborador ){
 		// Devuelve si un item de inventario posee algún movimiento asociado a un usuario
-		
-		return ( $reg_item_inv["entradas"] || $reg_item_inv["salidas"] );
+		$mov_en_inventario = false;
+
+		$q = "select count(idInventario) as numero, idItem from Inventario where idItem = $id_item and idColaborador = $idColaborador";
+		$data = mysqli_fetch_assoc( mysqli_query( $dbh, $q ) );
+
+		if( $data["numero"] > 0 ) $mov_en_inventario = true;
+
+		return $mov_en_inventario;
 	}
 	/* ----------------------------------------------------------- */
 	function obtenerItemsInventario( $dbh, $id_item, $id_colaborador ){
@@ -40,8 +46,9 @@
 		$posee_reg_inventario = false;
 		
 		foreach ( $items_familia as $item ) {
-			$inventario = obtenerItemsInventario( $dbh, $item['idItem'], $idColaborador );
-			if( tieneMovimientoInventario( $inventario ) ){
+			//$inventario = obtenerItemsInventario( $dbh, $item['idItem'], $idColaborador );
+			//if( $item['idItem'] == 1065 ) echo "IDITEM: ".$item['idItem'];
+			if( tieneMovimientoInventario( $dbh, $item['idItem'], $idColaborador ) ){
 				$posee_reg_inventario = true;
 				break;
 			}
@@ -128,7 +135,7 @@
 	/* ----------------------------------------------------------- */
 	function obtenerMotivosRetiroInventario( $dbh ){
 		// Devuelve la lista de motivos de retiros en los registros de inventario
-		$sql = "SELECT * FROM Motivo"; 
+		$sql = "SELECT * FROM Motivo where opcion_usuario = 1";
 		$Rs = mysqli_query( $dbh, $sql );
 
 		return obtenerListaRegistros( $Rs );

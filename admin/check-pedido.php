@@ -115,17 +115,18 @@
 							
 						</td>
 					</tr>
+					
 					<tr class="visible_estatus">
 						<td id="cnf_pedido_db" colspan="2" class="sec_confirmacion">
-							<span class="tx_confirmacion">Confirmar pedido en sistema</span>
+							<span class="tx_confirmacion"></span>
 							<div class="boton" id="bot_conf_pedido_bd">
-								<i class="fas fa-database" title="Volver a usuarios"></i> Confirmar
+								<i class="fas fa-database" title="Confirmar pedido en sistema"></i> Confirmar
 							</div>
 						</td>
 						<td id="cnf_pedido_archivo" colspan="2" class="sec_confirmacion">
 							<span class="tx_confirmacion">Confirmar pedido por archivo</span>
 							<div class="boton" id="bot_conf_pedido_archivo">
-								<i class="fas fa-file" title="Volver a usuarios"></i> Confirmar 
+								<i class="fas fa-file" title="Confirmar pedido por archivo"></i> Confirmar 
 							</div>
 						</td>
 					</tr>

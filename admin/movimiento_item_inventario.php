@@ -13,7 +13,7 @@
 		$titulo = "Movimientos de Inventario";
 		$colaborador = obtenerColaboradorPorId( $dbh, $_GET['idc'] );
 		$inventario = obtenerItemsInventario( $dbh, $_GET['iditem'], $_GET['idc'] );
-		if( tieneMovimientoInventario( $inventario ) )
+		if( tieneMovimientoInventario( $dbh, $_GET['iditem'], $_GET['idc'] ) )
 			$inventario_item = $inventario;
 		$movimientos = obtenerMovimientosItemColaborador( $dbh, $_GET['idc'], $_GET['iditem'] );
 	}

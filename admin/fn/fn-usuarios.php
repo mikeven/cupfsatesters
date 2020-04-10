@@ -3,7 +3,13 @@
 	/* Cupfsa Testers - Funciones sobre usuarios ----------------- */
 	/* ----------------------------------------------------------- */
 	/* ----------------------------------------------------------- */
+	function obtenerTodosColaboradores( $dbh ){
+		// Devuelve los registros de usuarios
+		$sql = "SELECT * FROM Colaborador"; 
+		$Rs = mysqli_query( $dbh, $sql );
 
+		return $Rs;
+	}
 	/* ----------------------------------------------------------- */
 	function obtenerColaboradores( $dbh, $id_admin ){
 		// Devuelve los registros de usuarios
@@ -33,5 +39,6 @@
 		return file_exists( $archivo );
 	}
 	/* ----------------------------------------------------------- */
-	$usuarios = obtenerColaboradores( $dbh, $_SESSION["Admin"]["idAdmin"] );
+	if( isset( $_SESSION["Admin"] ) )
+		$usuarios = obtenerColaboradores( $dbh, $_SESSION["Admin"]["idAdmin"] );
 ?>

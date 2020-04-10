@@ -128,7 +128,7 @@
 		?>
 
 	</div> <!--Cierro el listado-->
-	<div class="boton" onclick="javascript:location.href='index.php'" style="margin-top: 50px;">
+	<div class="boton" onclick="javascript:location.href='index.php'" style="margin: 50px 0;">
 			<i class="fas fa-arrow-alt-circle-left" title="Volver a solicitud"></i> Volver
 	</div>
 </center>

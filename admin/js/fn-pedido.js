@@ -41,8 +41,8 @@ function cargarPedido( frm ){
         beforeSend: function () {
             $("#response-pedido").attr( "align", "center" );
             $("#response-pedido").html( wait ); 
-            $("#bot_frm_pedido").fadeOut(200);
-            $("#frm-pedido").fadeOut(200);
+            $("#bot_frm_pedido").fadeOut( 200 );
+            $("#frm-pedido").fadeOut( 200 );
             $(".sec_confirmacion").fadeOut();
         },
         success: function( data ) {
@@ -65,7 +65,7 @@ function cargarPedido( frm ){
                 $("#registro_pedido").html( res.ctj_ped );
                 $("#cnf_pedido_archivo").fadeIn();
                 $("#vrepte").attr( "href", res.lnk_r );
-                $(".post_carga_r").fadeIn(200);
+                $(".post_carga_r").fadeIn( 200 );
             }
         }
     });
@@ -82,10 +82,12 @@ function confirmarPedidoRegistrado(){
         data:{ pedido_confirmado: idpedido },
         beforeSend: function () {
             $("#response-pedido").html( wait ); 
-            $("#cnf_pedido_db").fadeOut(200);
+            $("#cnf_pedido_db").fadeOut( 200 );
+            $("#bloque_carga_archivo").fadeOut( 200 );
         },
         success: function( data ) {            
             console.log(data);
+            $("#response-pedido").html( "" );
             res = jQuery.parseJSON( data );
             if( res.exito == 1 ){
                 $("#response-confirmacion-pedido").html( res.imp );
@@ -105,13 +107,13 @@ function confirmarPedidoPorArchivo(){
         data:{ pedido_archivo: frm_items_arch },
         beforeSend: function () {
             $("#response-pedido").html( wait ); 
-            $("#cnf_pedido_archivo").fadeOut(200);
+            $("#cnf_pedido_archivo").fadeOut( 200 );
         },
         success: function( data ) {            
             console.log(data);
             res = jQuery.parseJSON( data );
             if( res.exito == 1 ){
-                $("#response-confirmacion-pedido").html( res.imp );
+                $("#response-pedido").html( res.imp );
             }
         }
     });
