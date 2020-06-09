@@ -112,9 +112,10 @@ function confirmarPedidoPorArchivo(){
         success: function( data ) {            
             console.log(data);
             res = jQuery.parseJSON( data );
-            if( res.exito == 1 ){
+            $("#response-pedido").html( res.imp );
+            /*if( res.exito == 1 ){
                 $("#response-pedido").html( res.imp );
-            }
+            }*/
         }
     });
 }

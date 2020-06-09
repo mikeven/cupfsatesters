@@ -99,14 +99,20 @@
 		$idpedido 			= $pedido["idpedido_actarchivo"];
 		
 		if( !isset( $pedido["ritems"] ) ) 
-			$pedido["ritems"] = array();	// No hay items para eliminar (cantidades en cero): 
+			$pedido["ritems"] = array();	// No hay items para eliminar (cantidades en cero):
+
 		if( isset( $pedido["ritems"] ) ) 
 			$nitems 			= $pedido["nitems"];
 		else
 			$nitems 			= array();
 
-		$items 				= array_merge( $pedido["items"], $pedido["ritems"] ); 
-		// items con cantidades a modificar: items (cantidades diferentes al pedido) ritems: cantidades que pasan a cero
+		if( isset( $pedido["items"] ) ) 
+			$moditems 			= $pedido["items"];
+		else
+			$moditems 			= array();
+
+		$items 				= array_merge( $moditems, $pedido["ritems"] ); 
+		// items con cantidades a modificar: moditems (cantidades diferentes al pedido) + ritems: cantidades que pasan a cero
 
 		$actualizaciones 	= 0;
 
@@ -116,7 +122,7 @@
 			$data_item = obtenerIdItemPorReferencia( $dbh, $ref, $listado );
 			$actualizaciones += actualizarItemPedido( $dbh, $idpedido, $data_item["idItem"], $cant );
 		}
-
+		
 		// Registro de nuevos ítems
 		foreach ( $nitems as $it ) {
 			list( $ref, $cant ) = explode( '-', $it );
